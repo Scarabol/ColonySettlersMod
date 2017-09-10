@@ -20,6 +20,8 @@ namespace ScarabolMods
     NetworkID ID;
     Players.Player player;
     Vector3Int settlementOrigin;
+    int settlementTargetSize = 30;
+    BotAPIWrapper api = null;
     Banner banner = null;
     Stockpile stockpile = null;
 
@@ -48,6 +50,7 @@ namespace ScarabolMods
       this.player = new Players.Player (this.ID);
       this.player.Name = $"BOT {this.SteamID}";
       this.settlementOrigin = settlementOrigin;
+      this.api = new BotAPIWrapper (this.player);
     }
 
     public SettlersManager (JSONNode jsonNode)
@@ -83,36 +86,35 @@ namespace ScarabolMods
               }
             } else if (!hasWall) {
               hasWall = true;
-              int baseSize = 30;
-              for (int c = -baseSize; c < baseSize; c++) {
+              for (int c = -settlementTargetSize; c < settlementTargetSize; c++) {
                 for (int y = 0; y > -4; y--) {
-                  Vector3Int absPos = settlementOrigin + new Vector3Int (-baseSize, y, c);
+                  Vector3Int absPos = settlementOrigin + new Vector3Int (-settlementTargetSize, y, c);
                   // TODO use TryChangeBlockUser instead (permissions, sounds, ect.)
                   ServerManager.TryChangeBlock (absPos, BuiltinBlocks.Air, ServerManager.SetBlockFlags.DefaultAudio);
                 }
               }
-              for (int c = -baseSize; c < baseSize; c++) {
+              for (int c = -settlementTargetSize; c < settlementTargetSize; c++) {
                 for (int y = 0; y > -4; y--) {
-                  Vector3Int absPos = settlementOrigin + new Vector3Int (c, y, baseSize);
+                  Vector3Int absPos = settlementOrigin + new Vector3Int (c, y, settlementTargetSize);
                   // TODO use TryChangeBlockUser instead (permissions, sounds, ect.)
                   ServerManager.TryChangeBlock (absPos, BuiltinBlocks.Air, ServerManager.SetBlockFlags.DefaultAudio);
                 }
               }
-              for (int c = -baseSize; c < baseSize; c++) {
+              for (int c = -settlementTargetSize; c < settlementTargetSize; c++) {
                 for (int y = 0; y > -4; y--) {
-                  Vector3Int absPos = settlementOrigin + new Vector3Int (baseSize, y, -c);
+                  Vector3Int absPos = settlementOrigin + new Vector3Int (settlementTargetSize, y, -c);
                   // TODO use TryChangeBlockUser instead (permissions, sounds, ect.)
                   ServerManager.TryChangeBlock (absPos, BuiltinBlocks.Air, ServerManager.SetBlockFlags.DefaultAudio);
                 }
               }
-              for (int c = -baseSize; c < baseSize; c++) {
+              for (int c = -settlementTargetSize; c < settlementTargetSize; c++) {
                 for (int y = 0; y > -4; y--) {
-                  Vector3Int absPos = settlementOrigin + new Vector3Int (-c, y, -baseSize);
+                  Vector3Int absPos = settlementOrigin + new Vector3Int (-c, y, -settlementTargetSize);
                   // TODO use TryChangeBlockUser instead (permissions, sounds, ect.)
                   ServerManager.TryChangeBlock (absPos, BuiltinBlocks.Air, ServerManager.SetBlockFlags.DefaultAudio);
                 }
               }
-              Vector3Int bridgePos = new Vector3Int (settlementOrigin.x, 0, settlementOrigin.z - baseSize);
+              Vector3Int bridgePos = new Vector3Int (settlementOrigin.x, 0, settlementOrigin.z - settlementTargetSize);
               int avgHeight = 0;
               for (int x = -1; x <= 1; x++) {
                 for (int z = -1; z <= 1; z++) {
@@ -127,7 +129,7 @@ namespace ScarabolMods
               if (BotAPIWrapper.GetBedCount (this.player) < 6) {
                 for (int z = -1; z <= 1; z++) {
                   BotAPIWrapper.PlaceBlock (this.player, settlementOrigin.Add (-5, 0, z), VoxelSide.yPlus, BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXN);
-                  BotAPIWrapper.PlaceBlock (this.player, settlementOrigin.Add (5, 0, z), VoxelSide.yPlus, BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXN);
+                  BotAPIWrapper.PlaceBlock (this.player, settlementOrigin.Add (5, 0, z), VoxelSide.yPlus, BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXP);
                 }
               } else if (!hasArcher) {
                 Vector3Int archerPos = new Vector3Int (settlementOrigin.x, 0, settlementOrigin.z - 15);
@@ -138,6 +140,27 @@ namespace ScarabolMods
                   if (colony.LaborerCount < 1) {
                     colony.TryAddLaborer ();
                     Chat.SendToAll ("AI: tried to hire a missing laborer");
+                  }
+                }
+              } else {
+                ushort itemTypeBow = ItemTypes.IndexLookup.GetIndex ("bow");
+                if (stockpile.AmountContained (itemTypeBow) < 1) {
+                  foreach (Recipe recipe in RecipePlayer.AllRecipes) {
+                    bool crafted = false;
+                    foreach (InventoryItem result in recipe.Results) {
+                      if (result.Type == itemTypeBow) {
+                        if (recipe.CanBeMade (stockpile) > 0) {
+                          stockpile.Remove (recipe.Requirements);
+                          stockpile.Add (recipe.Results);
+                          crafted = true;
+                          Chat.SendToAll ("AI: just crafted a bow");
+                          break;
+                        }
+                      }
+                    }
+                    if (crafted) {
+                      break;
+                    }
                   }
                 }
               }

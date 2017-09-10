@@ -13,13 +13,20 @@ using BlockTypes.Builtin;
 
 namespace ScarabolMods
 {
-  public static class BotAPIWrapper
+  public class BotAPIWrapper
   {
-    public static bool PlaceBlock (Players.Player causedBy, Vector3Int voxelHit, VoxelSide voxelHitSide, ushort typeSelected, ushort typeToBuild)
+    private Players.Player player;
+
+    public BotAPIWrapper (Players.Player player)
+    {
+      this.player = player;
+    }
+
+    public bool PlaceBlock (Vector3Int voxelHit, VoxelSide voxelHitSide, ushort typeSelected, ushort typeToBuild)
     {
       ModLoader.OnTryChangeBlockUserData data = new ModLoader.OnTryChangeBlockUserData ();
       data.isPrimaryAction = false;
-      data.requestedBy = causedBy;
+      data.requestedBy = player;
       data.voxelHit = voxelHit;
       data.voxelHitSide = voxelHitSide;
       data.typeSelected = typeSelected;
@@ -27,7 +34,7 @@ namespace ScarabolMods
       return ChangeBlock (data);
     }
 
-    public static  bool ChangeBlock (ModLoader.OnTryChangeBlockUserData data)
+    public bool ChangeBlock (ModLoader.OnTryChangeBlockUserData data)
     {
       ByteBuilder builder = ByteBuilder.Get ();
       builder.Write (data.isPrimaryAction);
@@ -38,9 +45,14 @@ namespace ScarabolMods
       return  ServerManager.TryChangeBlockUser (ByteReader.Get (builder.ToArray ()), data.requestedBy);
     }
 
-    public static int GetBedCount (Players.Player player)
+    public int GetBedCount ()
     {
       return BedBlockTracker.GetCount (player);
+    }
+
+    public float GetAvgHeight (int centerx, int centerz, int range)
+    {
+
     }
   }
 }

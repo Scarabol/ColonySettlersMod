@@ -78,7 +78,7 @@ namespace ScarabolMods
             // primary goal: have a banner at settlement origin
             banner = BannerTracker.Get (this.player);
             if (banner == null) {
-              bool result = BotAPIWrapper.PlaceBlock (this.player, this.settlementOrigin, VoxelSide.yPlus, BuiltinBlocks.BannerTool, BuiltinBlocks.Banner);
+              bool result = api.PlaceBlock (this.settlementOrigin, VoxelSide.yPlus, BuiltinBlocks.BannerTool, BuiltinBlocks.Banner);
               if (!result) {
                 Chat.SendToAll ($"AI: Can't place banner at {this.settlementOrigin}");
               } else {
@@ -115,26 +115,20 @@ namespace ScarabolMods
                 }
               }
               Vector3Int bridgePos = new Vector3Int (settlementOrigin.x, 0, settlementOrigin.z - settlementTargetSize);
-              int avgHeight = 0;
-              for (int x = -1; x <= 1; x++) {
-                for (int z = -1; z <= 1; z++) {
-                  avgHeight += TerrainGenerator.GetHeight (bridgePos.x + x, bridgePos.z + z);
-                }
-              }
-              bridgePos.y = avgHeight / 9;
+              bridgePos.y = api.GetAvgHeight (bridgePos.x, bridgePos.z, 1);
               ServerManager.TryChangeBlock (bridgePos, ItemTypes.IndexLookup.GetIndex ("planks"), ServerManager.SetBlockFlags.DefaultAudio);
               Chat.SendToAll ("AI: Wall done");
             } else {
               Colony colony = Colony.Get (this.player);
-              if (BotAPIWrapper.GetBedCount (this.player) < 6) {
+              if (api.GetBedCount () < 6) {
                 for (int z = -1; z <= 1; z++) {
-                  BotAPIWrapper.PlaceBlock (this.player, settlementOrigin.Add (-5, 0, z), VoxelSide.yPlus, BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXN);
-                  BotAPIWrapper.PlaceBlock (this.player, settlementOrigin.Add (5, 0, z), VoxelSide.yPlus, BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXP);
+                  api.PlaceBlock (settlementOrigin.Add (-5, 0, z), VoxelSide.yPlus, BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXN);
+                  api.PlaceBlock (settlementOrigin.Add (5, 0, z), VoxelSide.yPlus, BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXP);
                 }
               } else if (!hasArcher) {
                 Vector3Int archerPos = new Vector3Int (settlementOrigin.x, 0, settlementOrigin.z - 15);
                 archerPos.y = TerrainGenerator.GetHeight (archerPos.x, archerPos.z);
-                hasArcher = BotAPIWrapper.PlaceBlock (this.player, archerPos, VoxelSide.yPlus, ItemTypes.IndexLookup.GetIndex ("quiver"), BuiltinBlocks.QuiverZN);
+                hasArcher = api.PlaceBlock (archerPos, VoxelSide.yPlus, ItemTypes.IndexLookup.GetIndex ("quiver"), BuiltinBlocks.QuiverZN);
                 if (hasArcher) {
                   Chat.SendToAll ($"AI: placed my archer at {archerPos}");
                   if (colony.LaborerCount < 1) {

@@ -50,9 +50,15 @@ namespace ScarabolMods
       return BedBlockTracker.GetCount (player);
     }
 
-    public float GetAvgHeight (int centerx, int centerz, int range)
+    public int GetAvgHeight (int centerx, int centerz, int range)
     {
-
+      float avgHeight = 0.0f;
+      for (int x = -range; x <= range; x++) {
+        for (int z = -range; z <= range; z++) {
+          avgHeight += TerrainGenerator.GetHeight (centerx + x, centerz + z);
+        }
+      }
+      return (int)System.Math.Round (avgHeight / ((1 + range * 2) ^ 2));
     }
   }
 }

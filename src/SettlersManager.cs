@@ -88,34 +88,31 @@ namespace ScarabolMods
               for (int c = -settlementTargetSize; c < settlementTargetSize; c++) {
                 for (int y = 0; y > -4; y--) {
                   Vector3Int absPos = settlementOrigin + new Vector3Int (-settlementTargetSize, y, c);
-                  // TODO use TryChangeBlockUser instead (permissions, sounds, ect.)
-                  ServerManager.TryChangeBlock (absPos, BuiltinBlocks.Air, ServerManager.SetBlockFlags.DefaultAudio);
+                  api.RemoveBlock (absPos);
                 }
               }
               for (int c = -settlementTargetSize; c < settlementTargetSize; c++) {
                 for (int y = 0; y > -4; y--) {
                   Vector3Int absPos = settlementOrigin + new Vector3Int (c, y, settlementTargetSize);
-                  // TODO use TryChangeBlockUser instead (permissions, sounds, ect.)
-                  ServerManager.TryChangeBlock (absPos, BuiltinBlocks.Air, ServerManager.SetBlockFlags.DefaultAudio);
+                  api.RemoveBlock (absPos);
                 }
               }
               for (int c = -settlementTargetSize; c < settlementTargetSize; c++) {
                 for (int y = 0; y > -4; y--) {
                   Vector3Int absPos = settlementOrigin + new Vector3Int (settlementTargetSize, y, -c);
-                  // TODO use TryChangeBlockUser instead (permissions, sounds, ect.)
-                  ServerManager.TryChangeBlock (absPos, BuiltinBlocks.Air, ServerManager.SetBlockFlags.DefaultAudio);
+                  api.RemoveBlock (absPos);
                 }
               }
               for (int c = -settlementTargetSize; c < settlementTargetSize; c++) {
                 for (int y = 0; y > -4; y--) {
                   Vector3Int absPos = settlementOrigin + new Vector3Int (-c, y, -settlementTargetSize);
-                  // TODO use TryChangeBlockUser instead (permissions, sounds, ect.)
-                  ServerManager.TryChangeBlock (absPos, BuiltinBlocks.Air, ServerManager.SetBlockFlags.DefaultAudio);
+                  api.RemoveBlock (absPos);
                 }
               }
               Vector3Int bridgePos = new Vector3Int (settlementOrigin.x, 0, settlementOrigin.z - settlementTargetSize);
               bridgePos.y = api.GetAvgHeight (bridgePos.x, bridgePos.z, 1);
-              ServerManager.TryChangeBlock (bridgePos, ItemTypes.IndexLookup.GetIndex ("planks"), ServerManager.SetBlockFlags.DefaultAudio);
+              ushort itemTypePlanks = ItemTypes.IndexLookup.GetIndex ("planks");
+              api.PlaceBlock (bridgePos, itemTypePlanks, itemTypePlanks);
               Pipliz.Log.Write ("AI: Wall done");
             } else {
               Colony colony = Colony.Get (this.player);

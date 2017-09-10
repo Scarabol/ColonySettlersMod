@@ -27,22 +27,22 @@ namespace ScarabolMods
       Vector3Int voxelHit;
       VoxelSide voxelHitSide;
       ushort actualType;
-      if (World.TryGetTypeAt (position.Add (0, -1, 0, out actualType) && actualType != BuiltinBlocks.Air)) {
+      if (World.TryGetTypeAt (position.Add (0, -1, 0), out actualType) && actualType != BuiltinBlocks.Air) {
         voxelHit = position.Add (0, -1, 0);
         voxelHitSide = VoxelSide.yPlus;
-      } else if (World.TryGetTypeAt (position.Add (1, 0, 0, out actualType) && actualType != BuiltinBlocks.Air)) {
+      } else if (World.TryGetTypeAt (position.Add (1, 0, 0), out actualType) && actualType != BuiltinBlocks.Air) {
         voxelHit = position.Add (1, 0, 0);
         voxelHitSide = VoxelSide.xMin;
-      } else if (World.TryGetTypeAt (position.Add (-1, 0, 0, out actualType) && actualType != BuiltinBlocks.Air)) {
+      } else if (World.TryGetTypeAt (position.Add (-1, 0, 0), out actualType) && actualType != BuiltinBlocks.Air) {
         voxelHit = position.Add (-1, 0, 0);
         voxelHitSide = VoxelSide.xPlus;
-      } else if (World.TryGetTypeAt (position.Add (0, 0, -1, out actualType) && actualType != BuiltinBlocks.Air)) {
+      } else if (World.TryGetTypeAt (position.Add (0, 0, -1), out actualType) && actualType != BuiltinBlocks.Air) {
         voxelHit = position.Add (0, 0, -1);
         voxelHitSide = VoxelSide.zPlus;
-      } else if (World.TryGetTypeAt (position.Add (0, 0, 1, out actualType) && actualType != BuiltinBlocks.Air)) {
+      } else if (World.TryGetTypeAt (position.Add (0, 0, 1), out actualType) && actualType != BuiltinBlocks.Air) {
         voxelHit = position.Add (0, 0, 1);
         voxelHitSide = VoxelSide.zMin;
-      } else if (World.TryGetTypeAt (position.Add (0, 1, 0, out actualType) && actualType != BuiltinBlocks.Air)) {
+      } else if (World.TryGetTypeAt (position.Add (0, 1, 0), out actualType) && actualType != BuiltinBlocks.Air) {
         voxelHit = position.Add (0, 1, 0);
         voxelHitSide = VoxelSide.yMin;
       } else {
@@ -60,6 +60,18 @@ namespace ScarabolMods
       data.voxelHitSide = voxelHitSide;
       data.typeSelected = typeSelected;
       data.typeToBuild = typeToBuild;
+      return ChangeBlock (data);
+    }
+
+    public bool RemoveBlock (Vector3Int position)
+    {
+      ModLoader.OnTryChangeBlockUserData data = new ModLoader.OnTryChangeBlockUserData ();
+      data.isPrimaryAction = true;
+      data.requestedBy = player;
+      data.voxelHit = position;
+      data.voxelHitSide = VoxelSide.yPlus;
+      data.typeSelected = BuiltinBlocks.Air;
+      data.typeToBuild = BuiltinBlocks.Air;
       return ChangeBlock (data);
     }
 

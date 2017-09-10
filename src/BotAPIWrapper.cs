@@ -46,6 +46,7 @@ namespace ScarabolMods
         voxelHit = position.Add (0, 1, 0);
         voxelHitSide = VoxelSide.yMin;
       } else {
+        Pipliz.Log.WriteError ($"No block to attach found near {position}");
         return false;
       }
       return PlaceBlock (voxelHit, voxelHitSide, typeSelected, typeToBuild);

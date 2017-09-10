@@ -22,6 +22,35 @@ namespace ScarabolMods
       this.player = player;
     }
 
+    public bool PlaceBlock (Vector3Int position, ushort typeSelected, ushort typeToBuild)
+    {
+      Vector3Int voxelHit;
+      VoxelSide voxelHitSide;
+      ushort actualType;
+      if (World.TryGetTypeAt (position.Add (0, -1, 0, out actualType) && actualType != BuiltinBlocks.Air)) {
+        voxelHit = position.Add (0, -1, 0);
+        voxelHitSide = VoxelSide.yPlus;
+      } else if (World.TryGetTypeAt (position.Add (1, 0, 0, out actualType) && actualType != BuiltinBlocks.Air)) {
+        voxelHit = position.Add (1, 0, 0);
+        voxelHitSide = VoxelSide.xMin;
+      } else if (World.TryGetTypeAt (position.Add (-1, 0, 0, out actualType) && actualType != BuiltinBlocks.Air)) {
+        voxelHit = position.Add (-1, 0, 0);
+        voxelHitSide = VoxelSide.xPlus;
+      } else if (World.TryGetTypeAt (position.Add (0, 0, -1, out actualType) && actualType != BuiltinBlocks.Air)) {
+        voxelHit = position.Add (0, 0, -1);
+        voxelHitSide = VoxelSide.zPlus;
+      } else if (World.TryGetTypeAt (position.Add (0, 0, 1, out actualType) && actualType != BuiltinBlocks.Air)) {
+        voxelHit = position.Add (0, 0, 1);
+        voxelHitSide = VoxelSide.zMin;
+      } else if (World.TryGetTypeAt (position.Add (0, 1, 0, out actualType) && actualType != BuiltinBlocks.Air)) {
+        voxelHit = position.Add (0, 1, 0);
+        voxelHitSide = VoxelSide.yMin;
+      } else {
+        return false;
+      }
+      return PlaceBlock (voxelHit, voxelHitSide, typeSelected, typeToBuild);
+    }
+
     public bool PlaceBlock (Vector3Int voxelHit, VoxelSide voxelHitSide, ushort typeSelected, ushort typeToBuild)
     {
       ModLoader.OnTryChangeBlockUserData data = new ModLoader.OnTryChangeBlockUserData ();
@@ -36,6 +65,7 @@ namespace ScarabolMods
 
     public bool ChangeBlock (ModLoader.OnTryChangeBlockUserData data)
     {
+      // TODO remove existing block at this position? (add to stockpile, remove delay)
       ByteBuilder builder = ByteBuilder.Get ();
       builder.Write (data.isPrimaryAction);
       builder.Write (data.voxelHit);
@@ -67,6 +97,11 @@ namespace ScarabolMods
       builder.Write (player.Name);
       Players.Connect (id);
       Players.SetName (player, ByteReader.Get (builder.ToArray ()));
+    }
+
+    public Banner GetBanner ()
+    {
+      return BannerTracker.Get (this.player);
     }
   }
 }

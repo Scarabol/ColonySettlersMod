@@ -30,8 +30,8 @@ namespace ScarabolMods
       Pipliz.Log.Write ("Loaded Settlers Mod 1.0 by Scarabol");
     }
 
-    [ModLoader.ModCallback (ModLoader.EModCallbackType.AfterWorldLoad, "scarabol.settlers.afterworldload")]
-    public static void AfterWorldLoad ()
+    [ModLoader.ModCallback (ModLoader.EModCallbackType.AfterNetworkSetup, "scarabol.settlers.afternetworksetup")]
+    public static void AfterNetworkSetup ()
     {
       SettlersTracker.LoadAndConnect ();
     }

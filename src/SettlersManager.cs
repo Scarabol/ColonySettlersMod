@@ -26,7 +26,6 @@ namespace ScarabolMods
     Stockpile stockpile = null;
 
     bool hasWall = false;
-    bool hasArcher = false;
 
     /* steps to found a colony
      * 
@@ -68,7 +67,7 @@ namespace ScarabolMods
 
     public void Connect ()
     {
-      Players.Connect (this.ID);
+      api.Connect (this.ID);
       stockpile = Stockpile.GetStockPile (this.player);
       new Thread (() => {
         Thread.CurrentThread.IsBackground = true;
@@ -80,9 +79,9 @@ namespace ScarabolMods
             if (banner == null) {
               bool result = api.PlaceBlock (this.settlementOrigin, VoxelSide.yPlus, BuiltinBlocks.BannerTool, BuiltinBlocks.Banner);
               if (!result) {
-                Chat.SendToAll ($"AI: Can't place banner at {this.settlementOrigin}");
+                Pipliz.Log.Write ($"AI: Can't place banner at {this.settlementOrigin}");
               } else {
-                Chat.SendToAll ($"AI: Banner placed at {this.settlementOrigin}");
+                Pipliz.Log.Write ($"AI: Banner placed at {this.settlementOrigin}");
               }
             } else if (!hasWall) {
               hasWall = true;
@@ -117,7 +116,7 @@ namespace ScarabolMods
               Vector3Int bridgePos = new Vector3Int (settlementOrigin.x, 0, settlementOrigin.z - settlementTargetSize);
               bridgePos.y = api.GetAvgHeight (bridgePos.x, bridgePos.z, 1);
               ServerManager.TryChangeBlock (bridgePos, ItemTypes.IndexLookup.GetIndex ("planks"), ServerManager.SetBlockFlags.DefaultAudio);
-              Chat.SendToAll ("AI: Wall done");
+              Pipliz.Log.Write ("AI: Wall done");
             } else {
               Colony colony = Colony.Get (this.player);
               if (api.GetBedCount () < 6) {
@@ -125,35 +124,37 @@ namespace ScarabolMods
                   api.PlaceBlock (settlementOrigin.Add (-5, 0, z), VoxelSide.yPlus, BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXN);
                   api.PlaceBlock (settlementOrigin.Add (5, 0, z), VoxelSide.yPlus, BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXP);
                 }
-              } else if (!hasArcher) {
+              } else {
                 Vector3Int archerPos = new Vector3Int (settlementOrigin.x, 0, settlementOrigin.z - 15);
                 archerPos.y = TerrainGenerator.GetHeight (archerPos.x, archerPos.z);
-                hasArcher = api.PlaceBlock (archerPos, VoxelSide.yPlus, ItemTypes.IndexLookup.GetIndex ("quiver"), BuiltinBlocks.QuiverZN);
-                if (hasArcher) {
-                  Chat.SendToAll ($"AI: placed my archer at {archerPos}");
-                  if (colony.LaborerCount < 1) {
-                    colony.TryAddLaborer ();
-                    Chat.SendToAll ("AI: tried to hire a missing laborer");
+                ushort actualType;
+                if (World.TryGetTypeAt (archerPos.Add (0, 1, 0), out actualType) && actualType != BuiltinBlocks.QuiverZN) {
+                  if (api.PlaceBlock (archerPos, VoxelSide.yPlus, ItemTypes.IndexLookup.GetIndex ("quiver"), BuiltinBlocks.QuiverZN)) {
+                    Pipliz.Log.Write ($"AI: placed my archer at {archerPos}");
+                    if (colony.LaborerCount < 1) {
+                      colony.TryAddLaborer ();
+                      Pipliz.Log.Write ("AI: tried to hire a missing laborer");
+                    }
                   }
-                }
-              } else {
-                ushort itemTypeBow = ItemTypes.IndexLookup.GetIndex ("bow");
-                if (stockpile.AmountContained (itemTypeBow) < 1) {
-                  foreach (Recipe recipe in RecipePlayer.AllRecipes) {
-                    bool crafted = false;
-                    foreach (InventoryItem result in recipe.Results) {
-                      if (result.Type == itemTypeBow) {
-                        if (recipe.CanBeMade (stockpile) > 0) {
-                          stockpile.Remove (recipe.Requirements);
-                          stockpile.Add (recipe.Results);
-                          crafted = true;
-                          Chat.SendToAll ("AI: just crafted a bow");
-                          break;
+                } else {
+                  ushort itemTypeBow = ItemTypes.IndexLookup.GetIndex ("bow");
+                  if (stockpile.AmountContained (itemTypeBow) < 1) {
+                    foreach (Recipe recipe in RecipePlayer.AllRecipes) {
+                      bool crafted = false;
+                      foreach (InventoryItem result in recipe.Results) {
+                        if (result.Type == itemTypeBow) {
+                          if (recipe.CanBeMade (stockpile) > 0) {
+                            stockpile.Remove (recipe.Requirements);
+                            stockpile.Add (recipe.Results);
+                            crafted = true;
+                            Pipliz.Log.Write ("AI: just crafted a bow");
+                            break;
+                          }
                         }
                       }
-                    }
-                    if (crafted) {
-                      break;
+                      if (crafted) {
+                        break;
+                      }
                     }
                   }
                 }

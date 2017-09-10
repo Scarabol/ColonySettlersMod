@@ -60,5 +60,13 @@ namespace ScarabolMods
       }
       return (int)System.Math.Round (avgHeight / ((1 + range * 2) ^ 2));
     }
+
+    public void Connect (NetworkID id)
+    {
+      ByteBuilder builder = ByteBuilder.Get ();
+      builder.Write (player.Name);
+      Players.Connect (id);
+      Players.SetName (player, ByteReader.Get (builder.ToArray ()));
+    }
   }
 }

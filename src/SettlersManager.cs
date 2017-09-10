@@ -112,7 +112,9 @@ namespace ScarabolMods
               Vector3Int bridgePos = new Vector3Int (settlementOrigin.x, 0, settlementOrigin.z - settlementTargetSize);
               bridgePos.y = api.GetAvgHeight (bridgePos.x, bridgePos.z, 1);
               ushort itemTypePlanks = ItemTypes.IndexLookup.GetIndex ("planks");
-              api.PlaceBlock (bridgePos, itemTypePlanks, itemTypePlanks);
+              if (!api.PlaceBlock (bridgePos, itemTypePlanks, itemTypePlanks)) {
+                Pipliz.Log.Write ("AI: Could not place bridge block");
+              }
               Pipliz.Log.Write ("AI: Wall done");
             } else {
               Colony colony = Colony.Get (this.player);

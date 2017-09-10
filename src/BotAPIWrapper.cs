@@ -100,7 +100,7 @@ namespace ScarabolMods
           avgHeight += TerrainGenerator.GetHeight (centerx + x, centerz + z);
         }
       }
-      return (int)System.Math.Round (avgHeight / ((1 + range * 2) ^ 2));
+      return Pipliz.Math.RoundToInt (avgHeight / System.Math.Pow (1 + range * 2, 2));
     }
 
     public void Connect (NetworkID id)

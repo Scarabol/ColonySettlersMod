@@ -124,14 +124,21 @@ namespace ScarabolMods
               Chat.SendToAll ("AI: Wall done");
             } else {
               Colony colony = Colony.Get (this.player);
-              if (!hasArcher) {
+              if (BotAPIWrapper.GetBedCount (this.player) < 6) {
+                for (int z = -1; z <= 1; z++) {
+                  BotAPIWrapper.PlaceBlock (this.player, settlementOrigin.Add (-5, 0, z), VoxelSide.yPlus, BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXN);
+                  BotAPIWrapper.PlaceBlock (this.player, settlementOrigin.Add (5, 0, z), VoxelSide.yPlus, BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXN);
+                }
+              } else if (!hasArcher) {
                 Vector3Int archerPos = new Vector3Int (settlementOrigin.x, 0, settlementOrigin.z - 15);
                 archerPos.y = TerrainGenerator.GetHeight (archerPos.x, archerPos.z);
                 hasArcher = BotAPIWrapper.PlaceBlock (this.player, archerPos, VoxelSide.yPlus, ItemTypes.IndexLookup.GetIndex ("quiver"), BuiltinBlocks.QuiverZN);
                 if (hasArcher) {
                   Chat.SendToAll ($"AI: placed my archer at {archerPos}");
-                  colony.TryAddLaborer ();
-                  Chat.SendToAll ("AI: tried to hire a missing laborer");
+                  if (colony.LaborerCount < 1) {
+                    colony.TryAddLaborer ();
+                    Chat.SendToAll ("AI: tried to hire a missing laborer");
+                  }
                 }
               }
             }

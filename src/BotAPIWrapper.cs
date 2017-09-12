@@ -180,6 +180,10 @@ namespace ScarabolMods
     public bool AddLaborer ()
     {
       Colony colony = Colony.Get (this.player);
+      if (Stockpile.TotalFood < 3 * colony.FoodUsePerHour) {
+        Pipliz.Log.Write ($"Could not hire, food too low");
+        return false;
+      }
       int followerBefore = colony.FollowerCount;
       colony.TryAddLaborer ();
       return colony.FollowerCount > followerBefore;

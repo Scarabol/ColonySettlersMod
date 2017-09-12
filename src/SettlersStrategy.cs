@@ -42,6 +42,7 @@ namespace ScarabolMods
       result.steps.Add (new Crafting ());
       result.steps.Add (new Laborers ());
       result.steps.Add (new BerryFarmers ());
+      result.steps.Add (new DigMine ());
       return result;
     }
 

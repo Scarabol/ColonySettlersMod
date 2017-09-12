@@ -273,4 +273,58 @@ namespace ScarabolMods
       return manager.Api.GetBerryAreaJobsCount () >= 2;
     }
   }
+
+  public class DigMine : StrategyStep
+  {
+    private bool hasMine = false;
+
+    public virtual bool IsComplete (SettlersManager manager)
+    {
+      return hasMine;
+    }
+
+    public virtual bool Execute (SettlersManager manager)
+    {
+      Pipliz.Log.Write ("AI: Started digging mine");
+      ushort itemTypeStonebricks = ItemTypes.IndexLookup.GetIndex ("stonebricks");
+      ushort itemTypeTorch = ItemTypes.IndexLookup.GetIndex ("torch");
+      Vector3Int minePos = manager.SettlementOrigin.Add (0, 0, -10);
+      minePos.y = TerrainGenerator.GetHeight (minePos.x, minePos.z);
+      Vector3Int stairOffset = new Vector3Int (0, 0, 0);
+      for (int y = minePos.y; y > 0; y--) {
+        for (int x = -1; x <= 1; x++) {
+          for (int z = 0; z <= 2; z++) {
+            if (!manager.Api.RemoveBlock (new Vector3Int (minePos.x + x, y, minePos.z + z))) {
+              return false;
+            }
+          }
+        }
+        if (y % 9 == 1) {
+          manager.Api.PlaceBlock (minePos.Add (1, -y, 0), itemTypeTorch, BuiltinBlocks.TorchZN);
+        }
+        manager.Api.PlaceBlock (minePos.Add (1, 0, 2) - stairOffset, itemTypeStonebricks, itemTypeStonebricks);
+        stairOffset.y++;
+        if (stairOffset.z >= 2) {
+          if (stairOffset.x >= 2) {
+            stairOffset.z = 1;
+          } else {
+            stairOffset.x++;
+          }
+        } else if (stairOffset.x >= 2) {
+          if (stairOffset.z > 0) {
+            stairOffset.z--;
+          } else {
+            stairOffset.x = 1;
+          }
+        } else if (stairOffset.x > 0) {
+          stairOffset.x--;
+        } else {
+          stairOffset.z++;
+        }
+      }
+      hasMine = true;
+      Pipliz.Log.Write ("AI: Mine done");
+      return true;
+    }
+  }
 }

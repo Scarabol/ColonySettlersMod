@@ -29,19 +29,18 @@ namespace ScarabolMods
 
     public virtual bool Execute (SettlersManager manager)
     {
-      bool result = true;
       for (int y = 0; y <= 5; y++) {
         for (int x = -manager.SettlementTargetSize; x < manager.SettlementTargetSize; x++) {
           for (int z = -manager.SettlementTargetSize; z < manager.SettlementTargetSize; z++) {
             Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (x, y, z);
-            result &= manager.Api.RemoveBlock (absPos);
+            if (!manager.Api.RemoveBlock (absPos)) {
+              return false;
+            }
           }
         }
       }
-      if (result) {
-        Pipliz.Log.Write ($"AI: Area is cleared");
-      }
-      return result;
+      Pipliz.Log.Write ($"AI: Area is cleared");
+      return true;
     }
   }
 

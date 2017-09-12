@@ -52,25 +52,25 @@ namespace ScarabolMods
     {
       hasWall = true;
       for (int c = -manager.SettlementTargetSize; c < manager.SettlementTargetSize; c++) {
-        for (int y = 0; y > -4; y--) {
+        for (int y = 0; y > -2; y--) {
           Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (-manager.SettlementTargetSize, y, c);
           manager.Api.RemoveBlock (absPos);
         }
       }
       for (int c = -manager.SettlementTargetSize; c < manager.SettlementTargetSize; c++) {
-        for (int y = 0; y > -4; y--) {
+        for (int y = 0; y > -2; y--) {
           Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (c, y, manager.SettlementTargetSize);
           manager.Api.RemoveBlock (absPos);
         }
       }
       for (int c = -manager.SettlementTargetSize; c < manager.SettlementTargetSize; c++) {
-        for (int y = 0; y > -4; y--) {
+        for (int y = 0; y > -2; y--) {
           Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (manager.SettlementTargetSize, y, -c);
           manager.Api.RemoveBlock (absPos);
         }
       }
       for (int c = -manager.SettlementTargetSize; c < manager.SettlementTargetSize; c++) {
-        for (int y = 0; y > -4; y--) {
+        for (int y = 0; y > -2; y--) {
           Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (-c, y, -manager.SettlementTargetSize);
           manager.Api.RemoveBlock (absPos);
         }

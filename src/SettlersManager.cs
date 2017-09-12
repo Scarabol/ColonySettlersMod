@@ -53,7 +53,7 @@ namespace ScarabolMods
         Thread.CurrentThread.IsBackground = true;
         Pipliz.Log.Write ($"Started AI thread for '{this.Name}'");
         while (true) {
-          Thread.Sleep (10000);
+          Thread.Sleep (5000);
           try {
             strategy.Execute (this);
           } catch (Exception exception) {

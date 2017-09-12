@@ -38,6 +38,9 @@ namespace ScarabolMods
           }
         }
       }
+      if (result) {
+        Pipliz.Log.Write ($"AI: Area is cleared");
+      }
       return result;
     }
   }

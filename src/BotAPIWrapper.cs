@@ -26,6 +26,15 @@ namespace ScarabolMods
       Players.SetName (this.player, ByteReader.Get (builder.ToArray ()));
     }
 
+    public void UpdatePosition (UnityEngine.Vector3 position, float yAngle)
+    {
+      ByteBuilder builder = ByteBuilder.Get ();
+      builder.Write (position);
+      builder.Write (yAngle);
+      NetworkWrapper.ProcessMessage (General.Networking.ServerMessageType.UpdatePlayerPosition, this.player, ByteReader.Get (builder.ToArray ()));
+      Pipliz.Log.Write ($"AI: moved to {position}, angle is {yAngle}");
+    }
+
     public bool PlaceBlock (Vector3Int position, ushort typeSelected, ushort typeToBuild)
     {
       ModLoader.OnTryChangeBlockUserData data = new ModLoader.OnTryChangeBlockUserData ();

@@ -48,6 +48,7 @@ namespace ScarabolMods
     public void Connect ()
     {
       Api.Connect (this.ID, this.Name);
+      Api.UpdatePosition (SettlementOrigin.Add (0, 0, -3).Vector, 0);
       SettlersStrategy strategy = SettlersStrategy.GetSimple ();
       new Thread (() => {
         Thread.CurrentThread.IsBackground = true;

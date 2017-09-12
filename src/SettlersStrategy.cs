@@ -34,6 +34,7 @@ namespace ScarabolMods
        * hire a coal miner
        */
       SettlersStrategy result = new SettlersStrategy ();
+      result.steps.Add (new ClearArea ());
       result.steps.Add (new PlaceBanner ());
       result.steps.Add (new DigTrench ());
       result.steps.Add (new PlaceBeds ());

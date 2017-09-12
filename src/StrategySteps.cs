@@ -155,13 +155,13 @@ namespace ScarabolMods
     public virtual bool IsComplete (SettlersManager manager)
     {
       ushort actualType;
-      return World.TryGetTypeAt (GetQuiverPos (manager), out actualType) && actualType == BuiltinBlocks.QuiverZN;
+      return World.TryGetTypeAt (GetQuiverPos (manager), out actualType) && actualType == BuiltinBlocks.QuiverZP;
     }
 
     public virtual bool Execute (SettlersManager manager)
     {
       Vector3Int quiverPos = GetQuiverPos (manager);
-      bool result = manager.Api.PlaceBlock (quiverPos, ItemTypes.IndexLookup.GetIndex ("quiver"), BuiltinBlocks.QuiverZN);
+      bool result = manager.Api.PlaceBlock (quiverPos, ItemTypes.IndexLookup.GetIndex ("quiver"), BuiltinBlocks.QuiverZP);
       if (result) {
         Pipliz.Log.Write ($"AI: placed my quiver at {quiverPos}");
       } else {

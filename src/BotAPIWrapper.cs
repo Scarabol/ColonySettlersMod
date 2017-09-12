@@ -37,6 +37,9 @@ namespace ScarabolMods
       data.typeToBuild = typeToBuild;
       if (World.TryGetTypeAt (position, out data.typeTillNow) && (data.typeTillNow == typeSelected || data.typeTillNow == typeToBuild)) {
         return true;
+      } else if (data.typeTillNow != BuiltinBlocks.Air && data.typeTillNow != BuiltinBlocks.Water) {
+        Pipliz.Log.Write ($"AI: Can't build at {position}, place is occupied");
+        return false;
       }
       if (ItemTypes.IsPlaceable (data.typeSelected) && !GetStockpile ().TryRemove (data.typeSelected)) {
         if (!TryCraftItem (data.typeSelected)) {

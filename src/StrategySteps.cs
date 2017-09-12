@@ -70,7 +70,7 @@ namespace ScarabolMods
   {
     public virtual bool IsComplete (SettlersManager manager)
     {
-      return manager.DefenceLevel < 1;
+      return manager.DefenceLevel >= 1;
     }
 
     public virtual bool Execute (SettlersManager manager)

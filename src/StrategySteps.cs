@@ -75,31 +75,63 @@ namespace ScarabolMods
 
     public virtual bool Execute (SettlersManager manager)
     {
+      Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (-manager.SettlementTargetSize, -1, -manager.SettlementTargetSize);
+      if (!manager.Api.RemoveBlock (absPos)) {
+        return false;
+      }
       for (int c = -manager.SettlementTargetSize + 1; c < manager.SettlementTargetSize - 1; c++) {
+        absPos = manager.SettlementOrigin + new Vector3Int (-manager.SettlementTargetSize, -1, c);
+        if (!manager.Api.RemoveBlock (absPos)) {
+          return false;
+        }
         for (int y = 0; y > -2; y--) {
-          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (-manager.SettlementTargetSize + 1, y - 1, c);
+          absPos = manager.SettlementOrigin + new Vector3Int (-manager.SettlementTargetSize + 1, y - 1, c);
           if (!manager.Api.RemoveBlock (absPos)) {
             return false;
           }
         }
       }
+      absPos = manager.SettlementOrigin + new Vector3Int (-manager.SettlementTargetSize, -1, manager.SettlementTargetSize);
+      if (!manager.Api.RemoveBlock (absPos)) {
+        return false;
+      }
       for (int c = -manager.SettlementTargetSize + 1; c < manager.SettlementTargetSize - 1; c++) {
+        absPos = manager.SettlementOrigin + new Vector3Int (c, -1, manager.SettlementTargetSize);
+        if (!manager.Api.RemoveBlock (absPos)) {
+          return false;
+        }
         for (int y = 0; y > -2; y--) {
-          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (c, y - 1, manager.SettlementTargetSize - 1);
+          absPos = manager.SettlementOrigin + new Vector3Int (c, y - 1, manager.SettlementTargetSize - 1);
           manager.Api.RemoveBlock (absPos);
         }
       }
+      absPos = manager.SettlementOrigin + new Vector3Int (manager.SettlementTargetSize, -1, manager.SettlementTargetSize);
+      if (!manager.Api.RemoveBlock (absPos)) {
+        return false;
+      }
       for (int c = -manager.SettlementTargetSize + 1; c < manager.SettlementTargetSize - 1; c++) {
+        absPos = manager.SettlementOrigin + new Vector3Int (manager.SettlementTargetSize, -1, -c);
+        if (!manager.Api.RemoveBlock (absPos)) {
+          return false;
+        }
         for (int y = 0; y > -2; y--) {
-          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (manager.SettlementTargetSize - 1, y - 1, -c);
+          absPos = manager.SettlementOrigin + new Vector3Int (manager.SettlementTargetSize - 1, y - 1, -c);
           if (!manager.Api.RemoveBlock (absPos)) {
             return false;
           }
         }
       }
+      absPos = manager.SettlementOrigin + new Vector3Int (manager.SettlementTargetSize, -1, -manager.SettlementTargetSize);
+      if (!manager.Api.RemoveBlock (absPos)) {
+        return false;
+      }
       for (int c = -manager.SettlementTargetSize + 1; c < manager.SettlementTargetSize - 1; c++) {
+        absPos = manager.SettlementOrigin + new Vector3Int (-c, -1, manager.SettlementTargetSize);
+        if (!manager.Api.RemoveBlock (absPos)) {
+          return false;
+        }
         for (int y = 0; y > -2; y--) {
-          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (-c, y - 1, -manager.SettlementTargetSize + 1);
+          absPos = manager.SettlementOrigin + new Vector3Int (-c, y - 1, -manager.SettlementTargetSize + 1);
           if (!manager.Api.RemoveBlock (absPos)) {
             return false;
           }

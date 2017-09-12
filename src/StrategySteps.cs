@@ -92,6 +92,10 @@ namespace ScarabolMods
           }
         }
       }
+      absPos = manager.SettlementOrigin + new Vector3Int (-manager.SettlementTargetSize, -1, manager.SettlementTargetSize - 1);
+      if (!manager.Api.RemoveBlock (absPos)) {
+        return false;
+      }
       absPos = manager.SettlementOrigin + new Vector3Int (-manager.SettlementTargetSize, -1, manager.SettlementTargetSize);
       if (!manager.Api.RemoveBlock (absPos)) {
         return false;
@@ -103,8 +107,14 @@ namespace ScarabolMods
         }
         for (int y = 0; y > -2; y--) {
           absPos = manager.SettlementOrigin + new Vector3Int (c, y - 1, manager.SettlementTargetSize - 1);
-          manager.Api.RemoveBlock (absPos);
+          if (!manager.Api.RemoveBlock (absPos)) {
+            return false;
+          }
         }
+      }
+      absPos = manager.SettlementOrigin + new Vector3Int (manager.SettlementTargetSize - 1, -1, manager.SettlementTargetSize);
+      if (!manager.Api.RemoveBlock (absPos)) {
+        return false;
       }
       absPos = manager.SettlementOrigin + new Vector3Int (manager.SettlementTargetSize, -1, manager.SettlementTargetSize);
       if (!manager.Api.RemoveBlock (absPos)) {
@@ -122,12 +132,16 @@ namespace ScarabolMods
           }
         }
       }
+      absPos = manager.SettlementOrigin + new Vector3Int (manager.SettlementTargetSize, -1, -manager.SettlementTargetSize + 1);
+      if (!manager.Api.RemoveBlock (absPos)) {
+        return false;
+      }
       absPos = manager.SettlementOrigin + new Vector3Int (manager.SettlementTargetSize, -1, -manager.SettlementTargetSize);
       if (!manager.Api.RemoveBlock (absPos)) {
         return false;
       }
       for (int c = -manager.SettlementTargetSize + 1; c < manager.SettlementTargetSize - 1; c++) {
-        absPos = manager.SettlementOrigin + new Vector3Int (-c, -1, manager.SettlementTargetSize);
+        absPos = manager.SettlementOrigin + new Vector3Int (-c, -1, -manager.SettlementTargetSize);
         if (!manager.Api.RemoveBlock (absPos)) {
           return false;
         }
@@ -138,12 +152,18 @@ namespace ScarabolMods
           }
         }
       }
-      Vector3Int bridgePos = new Vector3Int (manager.SettlementOrigin.x, -1, manager.SettlementOrigin.z + manager.SettlementTargetSize - 1);
-      bridgePos.y = manager.Api.GetAvgHeight (bridgePos.x, bridgePos.z, 1);
-      ushort itemTypePlanks = ItemTypes.IndexLookup.GetIndex ("planks");
-      if (!manager.Api.PlaceBlock (bridgePos, itemTypePlanks, itemTypePlanks)) {
-        Pipliz.Log.Write ("AI: Could not place bridge block");
+      absPos = manager.SettlementOrigin + new Vector3Int (-manager.SettlementTargetSize + 1, -1, -manager.SettlementTargetSize);
+      if (!manager.Api.RemoveBlock (absPos)) {
         return false;
+      }
+      for (int z = 0; z < 2; z++) {
+        Vector3Int bridgePos = new Vector3Int (manager.SettlementOrigin.x, -1, manager.SettlementOrigin.z + manager.SettlementTargetSize - z);
+        bridgePos.y = manager.Api.GetAvgHeight (bridgePos.x, bridgePos.z, 1);
+        ushort itemTypePlanks = ItemTypes.IndexLookup.GetIndex ("planks");
+        if (!manager.Api.PlaceBlock (bridgePos, itemTypePlanks, itemTypePlanks)) {
+          Pipliz.Log.Write ("AI: Could not place bridge block");
+          return false;
+        }
       }
       manager.DefenceLevel = 1;
       Pipliz.Log.Write ("AI: Trench done");

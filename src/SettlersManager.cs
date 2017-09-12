@@ -53,12 +53,12 @@ namespace ScarabolMods
         Thread.CurrentThread.IsBackground = true;
         Pipliz.Log.Write ($"Started AI thread for '{this.Name}'");
         while (true) {
-          Thread.Sleep (5000);
           try {
             strategy.Execute (this);
           } catch (Exception exception) {
             Pipliz.Log.WriteError ($"Exception in settlers thread; {exception.Message}");
           }
+          Thread.Sleep (5000);
         }
       }).Start ();
     }

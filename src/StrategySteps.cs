@@ -74,37 +74,44 @@ namespace ScarabolMods
 
     public virtual bool Execute (SettlersManager manager)
     {
-      hasWall = true;
-      for (int c = -manager.SettlementTargetSize; c < manager.SettlementTargetSize; c++) {
+      for (int c = -manager.SettlementTargetSize + 1; c < manager.SettlementTargetSize - 1; c++) {
         for (int y = 0; y > -2; y--) {
-          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (-manager.SettlementTargetSize, y - 1, c);
+          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (-manager.SettlementTargetSize + 1, y - 1, c);
+          if (!manager.Api.RemoveBlock (absPos)) {
+            return false;
+          }
+        }
+      }
+      for (int c = -manager.SettlementTargetSize + 1; c < manager.SettlementTargetSize - 1; c++) {
+        for (int y = 0; y > -2; y--) {
+          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (c, y - 1, manager.SettlementTargetSize - 1);
           manager.Api.RemoveBlock (absPos);
         }
       }
-      for (int c = -manager.SettlementTargetSize; c < manager.SettlementTargetSize; c++) {
+      for (int c = -manager.SettlementTargetSize + 1; c < manager.SettlementTargetSize - 1; c++) {
         for (int y = 0; y > -2; y--) {
-          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (c, y - 1, manager.SettlementTargetSize);
-          manager.Api.RemoveBlock (absPos);
+          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (manager.SettlementTargetSize - 1, y - 1, -c);
+          if (!manager.Api.RemoveBlock (absPos)) {
+            return false;
+          }
         }
       }
-      for (int c = -manager.SettlementTargetSize; c < manager.SettlementTargetSize; c++) {
+      for (int c = -manager.SettlementTargetSize + 1; c < manager.SettlementTargetSize - 1; c++) {
         for (int y = 0; y > -2; y--) {
-          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (manager.SettlementTargetSize, y - 1, -c);
-          manager.Api.RemoveBlock (absPos);
+          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (-c, y - 1, -manager.SettlementTargetSize + 1);
+          if (!manager.Api.RemoveBlock (absPos)) {
+            return false;
+          }
         }
       }
-      for (int c = -manager.SettlementTargetSize; c < manager.SettlementTargetSize; c++) {
-        for (int y = 0; y > -2; y--) {
-          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (-c, y - 1, -manager.SettlementTargetSize);
-          manager.Api.RemoveBlock (absPos);
-        }
-      }
-      Vector3Int bridgePos = new Vector3Int (manager.SettlementOrigin.x, -1, manager.SettlementOrigin.z + manager.SettlementTargetSize);
+      Vector3Int bridgePos = new Vector3Int (manager.SettlementOrigin.x, -1, manager.SettlementOrigin.z + manager.SettlementTargetSize - 1);
       bridgePos.y = manager.Api.GetAvgHeight (bridgePos.x, bridgePos.z, 1);
       ushort itemTypePlanks = ItemTypes.IndexLookup.GetIndex ("planks");
       if (!manager.Api.PlaceBlock (bridgePos, itemTypePlanks, itemTypePlanks)) {
         Pipliz.Log.Write ("AI: Could not place bridge block");
+        return false;
       }
+      hasWall = true;
       Pipliz.Log.Write ("AI: Trench done");
       // TODO aggregate result over all placements
       return true;

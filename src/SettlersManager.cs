@@ -37,7 +37,6 @@ namespace ScarabolMods
     public SettlersManager (JSONNode jsonNode)
       : this (jsonNode.GetAs<ulong> ("steamId"), (Vector3Int)jsonNode.GetAs<JSONNode> ("settlementOrigin"))
     {
-      this.DefenceLevel = jsonNode.GetAs<int> ("defenceLevel");
     }
 
     public JSONNode toJSON ()
@@ -45,7 +44,6 @@ namespace ScarabolMods
       JSONNode result = new JSONNode ();
       result.SetAs ("steamId", this.SteamID);
       result.SetAs ("settlementOrigin", (JSONNode)this.SettlementOrigin);
-      result.SetAs ("defenceLevel", this.DefenceLevel);
       return result;
     }
 

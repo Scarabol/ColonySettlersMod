@@ -75,6 +75,7 @@ namespace ScarabolMods
 
     public virtual bool Execute (SettlersManager manager)
     {
+      Pipliz.Log.Write ("AI: Started digging trench");
       Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (-manager.SettlementTargetSize, -1, -manager.SettlementTargetSize);
       if (!manager.Api.RemoveBlock (absPos)) {
         return false;

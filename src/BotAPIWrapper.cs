@@ -17,6 +17,12 @@ namespace ScarabolMods
   {
     private Players.Player player;
 
+    public Stockpile Stockpile {
+      get {
+        return Stockpile.GetStockPile (this.player);
+      }
+    }
+
     public void Connect (NetworkID id, string name)
     {
       Players.Connect (id);
@@ -52,7 +58,7 @@ namespace ScarabolMods
           return false;
         }
       }
-      if (ItemTypes.IsPlaceable (data.typeSelected) && !GetStockpile ().TryRemove (data.typeSelected)) {
+      if (ItemTypes.IsPlaceable (data.typeSelected) && !Stockpile.TryRemove (data.typeSelected)) {
         if (!TryCraftItem (data.typeSelected)) {
           string typename;
           if (ItemTypes.IndexLookup.TryGetName (data.typeSelected, out typename)) {
@@ -68,7 +74,7 @@ namespace ScarabolMods
         if (ItemTypes.IndexLookup.TryGetName (data.typeSelected, out typename)) {
           Pipliz.Log.Write ($"AI: Could not place {typename} at {position}");
         }
-        GetStockpile ().Add (typeSelected);
+        Stockpile.Add (typeSelected);
       }
       return result;
     }
@@ -91,7 +97,7 @@ namespace ScarabolMods
         if (result) {
           NPCInventory dummyInv = new NPCInventory (float.MaxValue);
           dummyInv.Add (ItemTypes.RemovalItems (data.typeTillNow));
-          dummyInv.TryDump (GetStockpile ());
+          dummyInv.TryDump (Stockpile);
           // TODO sleep actual destructionTime minus delay in main thread
           Thread.Sleep (500);
         }
@@ -133,14 +139,9 @@ namespace ScarabolMods
       return BannerTracker.Get (this.player);
     }
 
-    public Stockpile GetStockpile ()
-    {
-      return Stockpile.GetStockPile (this.player);
-    }
-
     public int GetItemAmountStockpile (string name)
     {
-      return GetStockpile ().AmountContained (ItemTypes.IndexLookup.GetIndex (name));
+      return Stockpile.AmountContained (ItemTypes.IndexLookup.GetIndex (name));
     }
 
     public bool TryCraftItem (string name)
@@ -155,7 +156,7 @@ namespace ScarabolMods
 
     public bool TryCraftItem (ushort itemTypeResult)
     {
-      Stockpile stockpile = GetStockpile ();
+      Stockpile stockpile = Stockpile;
       foreach (Recipe recipe in RecipePlayer.AllRecipes) {
         foreach (InventoryItem result in recipe.Results) {
           if (result.Type == itemTypeResult && stockpile.TryRemove (recipe.Requirements)) {

@@ -151,16 +151,18 @@ namespace ScarabolMods
   {
     public virtual bool IsComplete (SettlersManager manager)
     {
-      return manager.Api.GetColony ().LaborerCount > 0;
+      return manager.Api.GetLaborerCount () >= 0;
     }
 
     public virtual bool Execute (SettlersManager manager)
     {
-      Pipliz.Log.Write ("AI: tried to hire a missing laborer");
-      Colony colony = manager.Api.GetColony ();
-      int followerBefore = colony.FollowerCount;
-      colony.TryAddLaborer ();
-      return colony.FollowerCount > followerBefore;
+      bool result = manager.Api.AddLaborer ();
+      if (result) {
+        Pipliz.Log.Write ("AI: hired missing laborer");
+      } else {
+        Pipliz.Log.Write ("AI: could not hire laborer");
+      }
+      return result;
     }
   }
 }

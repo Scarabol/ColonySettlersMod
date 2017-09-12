@@ -118,11 +118,6 @@ namespace ScarabolMods
       return Stockpile.GetStockPile (this.player);
     }
 
-    public Colony GetColony ()
-    {
-      return Colony.Get (this.player);
-    }
-
     public int GetItemAmountStockpile (string name)
     {
       return GetStockpile ().AmountContained (ItemTypes.IndexLookup.GetIndex (name));
@@ -149,6 +144,19 @@ namespace ScarabolMods
         }
       }
       return false;
+    }
+
+    public int GetLaborerCount ()
+    {
+      return Colony.Get (this.player).LaborerCount - JobTracker.GetCount (this.player);
+    }
+
+    public bool AddLaborer ()
+    {
+      Colony colony = Colony.Get (this.player);
+      int followerBefore = colony.FollowerCount;
+      colony.TryAddLaborer ();
+      return colony.FollowerCount > followerBefore;
     }
   }
 }

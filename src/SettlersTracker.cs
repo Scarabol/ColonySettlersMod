@@ -18,12 +18,12 @@ namespace ScarabolMods
     private static List<SettlersManager> settlers = new List<SettlersManager> ();
     private static ulong nextId = 742000000;
 
-    // FIXME save and load from savegame folder
     public static void LoadAndConnect ()
     {
       try {
+        string jsonFilePath = Path.Combine (Path.Combine ("gamedata", "savegames"), Path.Combine (ServerManager.WorldName, "settlers.json"));
         JSONNode json;
-        if (Pipliz.JSON.JSON.Deserialize (Path.Combine (SettlersModEntries.ModDirectory, "settlers.json"), out json, false)) {
+        if (Pipliz.JSON.JSON.Deserialize (jsonFilePath, out json, false)) {
           List<SettlersManager> loadedSettlers = new List<SettlersManager> ();
           JSONNode jsonSettlers;
           if (!json.TryGetAs ("settlers", out jsonSettlers) || jsonSettlers.NodeType != NodeType.Array) {
@@ -54,7 +54,8 @@ namespace ScarabolMods
         }
         JSONNode jsonFileNode = new JSONNode ();
         jsonFileNode.SetAs ("settlers", jsonSettlers);
-        Pipliz.JSON.JSON.Serialize (Path.Combine (SettlersModEntries.ModDirectory, "settlers.json"), jsonFileNode, 3);
+        string jsonFilePath = Path.Combine (Path.Combine ("gamedata", "savegames"), Path.Combine (ServerManager.WorldName, "settlers.json"));
+        Pipliz.JSON.JSON.Serialize (jsonFilePath, jsonFileNode, 3);
       } catch (Exception exception) {
         Pipliz.Log.WriteError (string.Format ("Exception while saving settlers; {0}", exception.Message));
       }

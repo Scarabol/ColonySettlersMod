@@ -35,13 +35,5 @@ namespace ScarabolMods
     {
       SettlersTracker.LoadAndConnect ();
     }
-
-    /* [ModLoader.ModCallback (ModLoader.EModCallbackType.OnTryChangeBlockUser, "scarabol.settlers.ontrychangeblockuser")]
-    public static bool OnTryChangeBlockUser (ModLoader.OnTryChangeBlockUserData data)
-    {
-      // TODO remove block logging
-      Pipliz.Log.Write (string.Format ("{0}, {1}, {2}, {3}, {4}, {5}", data.isPrimaryAction, data.requestedBy, data.voxelHit, data.voxelHitSide, data.typeSelected, data.typeToBuild));
-      return true;
-    } */
   }
 }

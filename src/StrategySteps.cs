@@ -108,25 +108,27 @@ namespace ScarabolMods
 
   public class PlaceQuiver : StrategyStep
   {
-    // TODO move archerPos to SettlersLayout class
-    private Vector3Int GetArcherPos (SettlersManager manager)
+    private Vector3Int GetQuiverPos (SettlersManager manager)
     {
-      return new Vector3Int (manager.SettlementOrigin.x, 0, manager.SettlementOrigin.z - manager.SettlementTargetSize + 15);
+      Vector3Int quiverPos = new Vector3Int (manager.SettlementOrigin.x, 0, manager.SettlementOrigin.z - manager.SettlementTargetSize + 15);
+      quiverPos.y = TerrainGenerator.GetHeight (quiverPos.x, quiverPos.z) + 1;
+      return quiverPos;
     }
 
     public virtual bool IsComplete (SettlersManager manager)
     {
       ushort actualType;
-      return World.TryGetTypeAt (GetArcherPos (manager).Add (0, 1, 0), out actualType) && actualType != BuiltinBlocks.QuiverZN;
+      return World.TryGetTypeAt (GetQuiverPos (manager), out actualType) && actualType == BuiltinBlocks.QuiverZN;
     }
 
     public virtual bool Execute (SettlersManager manager)
     {
-      Vector3Int archerPos = GetArcherPos (manager);
-      archerPos.y = TerrainGenerator.GetHeight (archerPos.x, archerPos.z);
-      bool result = manager.Api.PlaceBlock (archerPos, VoxelSide.yPlus, ItemTypes.IndexLookup.GetIndex ("quiver"), BuiltinBlocks.QuiverZN);
+      Vector3Int quiverPos = GetQuiverPos (manager);
+      bool result = manager.Api.PlaceBlock (quiverPos, ItemTypes.IndexLookup.GetIndex ("quiver"), BuiltinBlocks.QuiverZN);
       if (result) {
-        Pipliz.Log.Write ($"AI: placed my archer at {archerPos}");
+        Pipliz.Log.Write ($"AI: placed my quiver at {quiverPos}");
+      } else {
+        Pipliz.Log.Write ($"AI: Could not place quiver at {quiverPos}");
       }
       return result;
     }

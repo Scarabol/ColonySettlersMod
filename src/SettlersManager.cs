@@ -19,8 +19,8 @@ namespace ScarabolMods
 
     public NetworkID ID;
     public string Name;
-    public Vector3Int SettlementOrigin;
     public int SettlementTargetSize = 30;
+    public Vector3Int SettlementOrigin;
     public BotAPIWrapper Api = null;
 
     public SettlersManager (ulong steamId, Vector3Int settlementOrigin)

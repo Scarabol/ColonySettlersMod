@@ -22,14 +22,16 @@ namespace ScarabolMods
 
   public class ClearArea : StrategyStep
   {
+    private bool cleared = false;
+
     public virtual bool IsComplete (SettlersManager manager)
     {
-      return manager.Api.GetBanner () != null;
+      return cleared || manager.Api.GetBanner () != null;
     }
 
     public virtual bool Execute (SettlersManager manager)
     {
-      for (int y = 0; y <= 5; y++) {
+      for (int y = 1; y <= 5; y++) {
         for (int x = -manager.SettlementTargetSize; x < manager.SettlementTargetSize; x++) {
           for (int z = -manager.SettlementTargetSize; z < manager.SettlementTargetSize; z++) {
             Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (x, y, z);
@@ -39,6 +41,7 @@ namespace ScarabolMods
           }
         }
       }
+      cleared = true;
       Pipliz.Log.Write ($"AI: Area is cleared");
       return true;
     }

@@ -180,7 +180,6 @@ namespace ScarabolMods
 
     public virtual bool Execute (SettlersManager manager)
     {
-      // TODO check if bed is already there or improve placeblock to handle rotatables
       for (int z = -1; z <= 1; z++) {
         if (!manager.Api.PlaceBlock (manager.SettlementOrigin.Add (-5, 0, z), BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXN)) {
           return false;

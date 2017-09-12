@@ -103,7 +103,6 @@ namespace ScarabolMods
 
     private bool ChangeBlock (ModLoader.OnTryChangeBlockUserData data)
     {
-      // TODO remove existing block at this position? (add to stockpile, remove delay)
       ByteBuilder builder = ByteBuilder.Get ();
       builder.Write (data.isPrimaryAction);
       builder.Write (data.voxelHit);

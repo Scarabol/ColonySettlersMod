@@ -35,23 +35,26 @@ namespace ScarabolMods
       data.voxelHitSide = VoxelSide.yPlus;
       data.typeSelected = typeSelected;
       data.typeToBuild = typeToBuild;
-      bool result = false;
-      if (!ItemTypes.IsPlaceable (data.typeSelected) || GetStockpile ().TryRemove (data.typeSelected)) {
-        result = ChangeBlock (data);
-        if (result) {
-          Thread.Sleep (200);
-        } else {
+      if (World.TryGetTypeAt (position, out data.typeTillNow) && (data.typeTillNow == typeSelected || data.typeTillNow == typeToBuild)) {
+        return true;
+      }
+      if (ItemTypes.IsPlaceable (data.typeSelected) && !GetStockpile ().TryRemove (data.typeSelected)) {
+        if (!TryCraftItem (data.typeSelected)) {
           string typename;
           if (ItemTypes.IndexLookup.TryGetName (data.typeSelected, out typename)) {
-            Pipliz.Log.Write ($"AI: Could not place {typename} at {position}");
+            Pipliz.Log.Write ($"AI: No {typename} item in stockpile to place");
           }
-          GetStockpile ().Add (typeSelected);
         }
+      }
+      bool result = ChangeBlock (data);
+      if (result) {
+        Thread.Sleep (200);
       } else {
         string typename;
         if (ItemTypes.IndexLookup.TryGetName (data.typeSelected, out typename)) {
-          Pipliz.Log.Write ($"AI: No {typename} item in stockpile to place");
+          Pipliz.Log.Write ($"AI: Could not place {typename} at {position}");
         }
+        GetStockpile ().Add (typeSelected);
       }
       return result;
     }
@@ -134,12 +137,20 @@ namespace ScarabolMods
         Pipliz.Log.Write ($"AI: Could not find item type {name}");
         return false;
       }
+      return TryCraftItem (itemTypeResult);
+    }
+
+    public bool TryCraftItem (ushort itemTypeResult)
+    {
       Stockpile stockpile = GetStockpile ();
       foreach (Recipe recipe in RecipePlayer.AllRecipes) {
         foreach (InventoryItem result in recipe.Results) {
           if (result.Type == itemTypeResult && stockpile.TryRemove (recipe.Requirements)) {
             stockpile.Add (recipe.Results);
-            Pipliz.Log.Write ($"AI: just crafted a {name}");
+            string name;
+            if (ItemTypes.IndexLookup.TryGetName (itemTypeResult, out name)) {
+              Pipliz.Log.Write ($"AI: just crafted a {name}");
+            }
             return true;
           }
         }

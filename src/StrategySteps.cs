@@ -98,10 +98,13 @@ namespace ScarabolMods
     {
       // TODO check if bed is already there or improve placeblock to handle rotatables
       for (int z = -1; z <= 1; z++) {
-        manager.Api.PlaceBlock (manager.SettlementOrigin.Add (-5, 0, z), BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXN);
-        manager.Api.PlaceBlock (manager.SettlementOrigin.Add (5, 0, z), BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXP);
+        if (!manager.Api.PlaceBlock (manager.SettlementOrigin.Add (-5, 0, z), BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXN)) {
+          return false;
+        }
+        if (!manager.Api.PlaceBlock (manager.SettlementOrigin.Add (5, 0, z), BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXP)) {
+          return false;
+        }
       }
-      // TODO aggregate state over all placements
       return true;
     }
   }

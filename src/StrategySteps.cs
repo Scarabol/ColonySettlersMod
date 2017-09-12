@@ -299,8 +299,8 @@ namespace ScarabolMods
             }
           }
         }
-        if (y % 9 == 1) {
-          manager.Api.PlaceBlock (minePos.Add (1, -y, 0), itemTypeTorch, BuiltinBlocks.TorchZN);
+        if (stairOffset.y == 1 || (stairOffset.y > 0 && (stairOffset.y % 8) == 0)) {
+          manager.Api.PlaceBlock (minePos.Add (0, -stairOffset.y, 2), itemTypeTorch, BuiltinBlocks.TorchZP);
         }
         manager.Api.PlaceBlock (minePos.Add (1, 0, 2) - stairOffset, itemTypeStonebricks, itemTypeStonebricks);
         stairOffset.y++;

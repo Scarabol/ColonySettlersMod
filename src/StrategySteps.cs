@@ -68,11 +68,9 @@ namespace ScarabolMods
 
   public class DigTrench : StrategyStep
   {
-    private bool hasWall = false;
-
     public virtual bool IsComplete (SettlersManager manager)
     {
-      return hasWall;
+      return manager.DefenceLevel < 1;
     }
 
     public virtual bool Execute (SettlersManager manager)
@@ -114,9 +112,8 @@ namespace ScarabolMods
         Pipliz.Log.Write ("AI: Could not place bridge block");
         return false;
       }
-      hasWall = true;
+      manager.DefenceLevel = 1;
       Pipliz.Log.Write ("AI: Trench done");
-      // TODO aggregate result over all placements
       return true;
     }
   }

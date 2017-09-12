@@ -21,6 +21,7 @@ namespace ScarabolMods
     public string Name;
     public int SettlementTargetSize = 30;
     public Vector3Int SettlementOrigin;
+    public int DefenceLevel;
     public BotAPIWrapper Api = null;
 
     public SettlersManager (ulong steamId, Vector3Int settlementOrigin)
@@ -29,12 +30,14 @@ namespace ScarabolMods
       this.ID = new NetworkID (new Steamworks.CSteamID (this.SteamID));
       this.Name = $"BOT {this.SteamID}";
       this.SettlementOrigin = settlementOrigin;
+      this.DefenceLevel = 0;
       this.Api = new BotAPIWrapper ();
     }
 
     public SettlersManager (JSONNode jsonNode)
       : this (jsonNode.GetAs<ulong> ("steamId"), (Vector3Int)jsonNode.GetAs<JSONNode> ("settlementOrigin"))
     {
+      this.DefenceLevel = jsonNode.GetAs<int> ("defenceLevel");
     }
 
     public JSONNode toJSON ()
@@ -42,6 +45,7 @@ namespace ScarabolMods
       JSONNode result = new JSONNode ();
       result.SetAs ("steamId", this.SteamID);
       result.SetAs ("settlementOrigin", (JSONNode)this.SettlementOrigin);
+      result.SetAs ("defenceLevel", this.DefenceLevel);
       return result;
     }
 

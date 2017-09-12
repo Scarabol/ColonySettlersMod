@@ -17,9 +17,13 @@ namespace ScarabolMods
   {
     private Players.Player player;
 
-    public BotAPIWrapper (Players.Player player)
+    public void Connect (NetworkID id, string name)
     {
-      this.player = player;
+      Players.Connect (id);
+      this.player = Players.GetPlayer (id);
+      ByteBuilder builder = ByteBuilder.Get ();
+      builder.Write (name);
+      Players.SetName (this.player, ByteReader.Get (builder.ToArray ()));
     }
 
     public bool PlaceBlock (Vector3Int position, ushort typeSelected, ushort typeToBuild)
@@ -104,17 +108,47 @@ namespace ScarabolMods
       return Pipliz.Math.RoundToInt (avgHeight / System.Math.Pow (1 + range * 2, 2));
     }
 
-    public void Connect (NetworkID id)
-    {
-      ByteBuilder builder = ByteBuilder.Get ();
-      builder.Write (player.Name);
-      Players.Connect (id);
-      Players.SetName (player, ByteReader.Get (builder.ToArray ()));
-    }
-
     public Banner GetBanner ()
     {
       return BannerTracker.Get (this.player);
+    }
+
+    public Stockpile GetStockpile ()
+    {
+      return Stockpile.GetStockPile (this.player);
+    }
+
+    public Colony GetColony ()
+    {
+      return Colony.Get (this.player);
+    }
+
+    public int GetItemAmountStockpile (string name)
+    {
+      return GetStockpile ().AmountContained (ItemTypes.IndexLookup.GetIndex (name));
+    }
+
+    public bool TryCraftItem (string name)
+    {
+      ushort itemTypeResult;
+      if (!ItemTypes.IndexLookup.TryGetIndex (name, out itemTypeResult)) {
+        Pipliz.Log.Write ($"AI: Could not find item type {name}");
+        return false;
+      }
+      Stockpile stockpile = GetStockpile ();
+      foreach (Recipe recipe in RecipePlayer.AllRecipes) {
+        foreach (InventoryItem result in recipe.Results) {
+          if (result.Type == itemTypeResult) {
+            if (recipe.CanBeMade (stockpile) > 0) {
+              stockpile.Remove (recipe.Requirements);
+              stockpile.Add (recipe.Results);
+              Pipliz.Log.Write ($"AI: just crafted a {name}");
+              return true;
+            }
+          }
+        }
+      }
+      return false;
     }
   }
 }

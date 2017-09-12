@@ -97,7 +97,7 @@ namespace ScarabolMods
           manager.Api.RemoveBlock (absPos);
         }
       }
-      Vector3Int bridgePos = new Vector3Int (manager.SettlementOrigin.x, -1, manager.SettlementOrigin.z - manager.SettlementTargetSize);
+      Vector3Int bridgePos = new Vector3Int (manager.SettlementOrigin.x, -1, manager.SettlementOrigin.z + manager.SettlementTargetSize);
       bridgePos.y = manager.Api.GetAvgHeight (bridgePos.x, bridgePos.z, 1);
       ushort itemTypePlanks = ItemTypes.IndexLookup.GetIndex ("planks");
       if (!manager.Api.PlaceBlock (bridgePos, itemTypePlanks, itemTypePlanks)) {
@@ -135,7 +135,7 @@ namespace ScarabolMods
   {
     private Vector3Int GetQuiverPos (SettlersManager manager)
     {
-      Vector3Int quiverPos = new Vector3Int (manager.SettlementOrigin.x, 0, manager.SettlementOrigin.z - manager.SettlementTargetSize + 15);
+      Vector3Int quiverPos = new Vector3Int (manager.SettlementOrigin.x, 0, manager.SettlementOrigin.z + manager.SettlementTargetSize - 15);
       quiverPos.y = TerrainGenerator.GetHeight (quiverPos.x, quiverPos.z) + 1;
       return quiverPos;
     }

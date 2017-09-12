@@ -28,44 +28,32 @@ namespace ScarabolMods
 
     public bool PlaceBlock (Vector3Int position, ushort typeSelected, ushort typeToBuild)
     {
-      Vector3Int voxelHit;
-      VoxelSide voxelHitSide;
-      ushort actualType;
-      if (World.TryGetTypeAt (position.Add (0, -1, 0), out actualType) && actualType != BuiltinBlocks.Air) {
-        voxelHit = position.Add (0, -1, 0);
-        voxelHitSide = VoxelSide.yPlus;
-      } else if (World.TryGetTypeAt (position.Add (1, 0, 0), out actualType) && actualType != BuiltinBlocks.Air) {
-        voxelHit = position.Add (1, 0, 0);
-        voxelHitSide = VoxelSide.xMin;
-      } else if (World.TryGetTypeAt (position.Add (-1, 0, 0), out actualType) && actualType != BuiltinBlocks.Air) {
-        voxelHit = position.Add (-1, 0, 0);
-        voxelHitSide = VoxelSide.xPlus;
-      } else if (World.TryGetTypeAt (position.Add (0, 0, -1), out actualType) && actualType != BuiltinBlocks.Air) {
-        voxelHit = position.Add (0, 0, -1);
-        voxelHitSide = VoxelSide.zPlus;
-      } else if (World.TryGetTypeAt (position.Add (0, 0, 1), out actualType) && actualType != BuiltinBlocks.Air) {
-        voxelHit = position.Add (0, 0, 1);
-        voxelHitSide = VoxelSide.zMin;
-      } else if (World.TryGetTypeAt (position.Add (0, 1, 0), out actualType) && actualType != BuiltinBlocks.Air) {
-        voxelHit = position.Add (0, 1, 0);
-        voxelHitSide = VoxelSide.yMin;
-      } else {
-        Pipliz.Log.WriteError ($"No block to attach found near {position}");
-        return false;
-      }
-      return PlaceBlock (voxelHit, voxelHitSide, typeSelected, typeToBuild);
-    }
-
-    public bool PlaceBlock (Vector3Int voxelHit, VoxelSide voxelHitSide, ushort typeSelected, ushort typeToBuild)
-    {
       ModLoader.OnTryChangeBlockUserData data = new ModLoader.OnTryChangeBlockUserData ();
       data.isPrimaryAction = false;
       data.requestedBy = player;
-      data.voxelHit = voxelHit;
-      data.voxelHitSide = voxelHitSide;
+      data.voxelHit = position.Add (0, -1, 0);
+      data.voxelHitSide = VoxelSide.yPlus;
       data.typeSelected = typeSelected;
       data.typeToBuild = typeToBuild;
-      return ChangeBlock (data);
+      bool result = false;
+      if (!ItemTypes.IsPlaceable (data.typeSelected) || GetStockpile ().TryRemove (data.typeSelected)) {
+        result = ChangeBlock (data);
+        if (result) {
+          Thread.Sleep (200);
+        } else {
+          string typename;
+          if (ItemTypes.IndexLookup.TryGetName (data.typeSelected, out typename)) {
+            Pipliz.Log.Write ($"AI: Could not place {typename} at {position}");
+          }
+          GetStockpile ().Add (typeSelected);
+        }
+      } else {
+        string typename;
+        if (ItemTypes.IndexLookup.TryGetName (data.typeSelected, out typename)) {
+          Pipliz.Log.Write ($"AI: No {typename} item in stockpile to place");
+        }
+      }
+      return result;
     }
 
     public bool RemoveBlock (Vector3Int position)
@@ -77,10 +65,26 @@ namespace ScarabolMods
       data.voxelHitSide = VoxelSide.yPlus;
       data.typeSelected = BuiltinBlocks.Air;
       data.typeToBuild = BuiltinBlocks.Air;
-      return ChangeBlock (data);
+      bool result = false;
+      if (World.TryGetTypeAt (data.VoxelToChange, out data.typeTillNow)) {
+        if (data.typeTillNow == BuiltinBlocks.Air) {
+          return true;
+        }
+        result = ChangeBlock (data);
+        if (result) {
+          NPCInventory dummyInv = new NPCInventory (float.MaxValue);
+          dummyInv.Add (ItemTypes.RemovalItems (data.typeTillNow));
+          dummyInv.TryDump (GetStockpile ());
+          // TODO sleep actual destructionTime minus delay in main thread
+          Thread.Sleep (500);
+        }
+      } else {
+        Pipliz.Log.WriteError ($"AI: Could not determine type at {position}");
+      }
+      return result;
     }
 
-    public bool ChangeBlock (ModLoader.OnTryChangeBlockUserData data)
+    private bool ChangeBlock (ModLoader.OnTryChangeBlockUserData data)
     {
       // TODO remove existing block at this position? (add to stockpile, remove delay)
       ByteBuilder builder = ByteBuilder.Get ();

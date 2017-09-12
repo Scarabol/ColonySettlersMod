@@ -29,7 +29,7 @@ namespace ScarabolMods
 
     public virtual bool Execute (SettlersManager manager)
     {
-      bool result = manager.Api.PlaceBlock (manager.SettlementOrigin, VoxelSide.yPlus, BuiltinBlocks.BannerTool, BuiltinBlocks.Banner);
+      bool result = manager.Api.PlaceBlock (manager.SettlementOrigin, BuiltinBlocks.BannerTool, BuiltinBlocks.Banner);
       if (!result) {
         Pipliz.Log.Write ($"AI: Can't place banner at {manager.SettlementOrigin}");
       } else {
@@ -53,29 +53,29 @@ namespace ScarabolMods
       hasWall = true;
       for (int c = -manager.SettlementTargetSize; c < manager.SettlementTargetSize; c++) {
         for (int y = 0; y > -2; y--) {
-          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (-manager.SettlementTargetSize, y, c);
+          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (-manager.SettlementTargetSize, y - 1, c);
           manager.Api.RemoveBlock (absPos);
         }
       }
       for (int c = -manager.SettlementTargetSize; c < manager.SettlementTargetSize; c++) {
         for (int y = 0; y > -2; y--) {
-          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (c, y, manager.SettlementTargetSize);
+          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (c, y - 1, manager.SettlementTargetSize);
           manager.Api.RemoveBlock (absPos);
         }
       }
       for (int c = -manager.SettlementTargetSize; c < manager.SettlementTargetSize; c++) {
         for (int y = 0; y > -2; y--) {
-          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (manager.SettlementTargetSize, y, -c);
+          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (manager.SettlementTargetSize, y - 1, -c);
           manager.Api.RemoveBlock (absPos);
         }
       }
       for (int c = -manager.SettlementTargetSize; c < manager.SettlementTargetSize; c++) {
         for (int y = 0; y > -2; y--) {
-          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (-c, y, -manager.SettlementTargetSize);
+          Vector3Int absPos = manager.SettlementOrigin + new Vector3Int (-c, y - 1, -manager.SettlementTargetSize);
           manager.Api.RemoveBlock (absPos);
         }
       }
-      Vector3Int bridgePos = new Vector3Int (manager.SettlementOrigin.x, 0, manager.SettlementOrigin.z - manager.SettlementTargetSize);
+      Vector3Int bridgePos = new Vector3Int (manager.SettlementOrigin.x, -1, manager.SettlementOrigin.z - manager.SettlementTargetSize);
       bridgePos.y = manager.Api.GetAvgHeight (bridgePos.x, bridgePos.z, 1);
       ushort itemTypePlanks = ItemTypes.IndexLookup.GetIndex ("planks");
       if (!manager.Api.PlaceBlock (bridgePos, itemTypePlanks, itemTypePlanks)) {
@@ -98,8 +98,8 @@ namespace ScarabolMods
     {
       // TODO check if bed is already there or improve placeblock to handle rotatables
       for (int z = -1; z <= 1; z++) {
-        manager.Api.PlaceBlock (manager.SettlementOrigin.Add (-5, 0, z), VoxelSide.yPlus, BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXN);
-        manager.Api.PlaceBlock (manager.SettlementOrigin.Add (5, 0, z), VoxelSide.yPlus, BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXP);
+        manager.Api.PlaceBlock (manager.SettlementOrigin.Add (-5, 0, z), BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXN);
+        manager.Api.PlaceBlock (manager.SettlementOrigin.Add (5, 0, z), BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXP);
       }
       // TODO aggregate state over all placements
       return true;

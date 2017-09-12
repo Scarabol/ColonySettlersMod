@@ -41,6 +41,7 @@ namespace ScarabolMods
       result.steps.Add (new PlaceQuiver ());
       result.steps.Add (new Crafting ());
       result.steps.Add (new Laborers ());
+      result.steps.Add (new BerryFarmers ());
       return result;
     }
 

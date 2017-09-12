@@ -173,5 +173,15 @@ namespace ScarabolMods
       colony.TryAddLaborer ();
       return colony.FollowerCount > followerBefore;
     }
+
+    public int GetBerryAreaJobsCount ()
+    {
+      return BerryAreaJobTracker.GetCount (this.player);
+    }
+
+    public void AddBerryAreaJob (UnityEngine.Bounds bounds)
+    {
+      BerryAreaJobTracker.Add (bounds, this.player);
+    }
   }
 }

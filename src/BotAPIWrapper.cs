@@ -137,13 +137,10 @@ namespace ScarabolMods
       Stockpile stockpile = GetStockpile ();
       foreach (Recipe recipe in RecipePlayer.AllRecipes) {
         foreach (InventoryItem result in recipe.Results) {
-          if (result.Type == itemTypeResult) {
-            if (recipe.CanBeMade (stockpile) > 0) {
-              stockpile.Remove (recipe.Requirements);
-              stockpile.Add (recipe.Results);
-              Pipliz.Log.Write ($"AI: just crafted a {name}");
-              return true;
-            }
+          if (result.Type == itemTypeResult && stockpile.TryRemove (recipe.Requirements)) {
+            stockpile.Add (recipe.Results);
+            Pipliz.Log.Write ($"AI: just crafted a {name}");
+            return true;
           }
         }
       }

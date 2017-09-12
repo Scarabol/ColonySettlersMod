@@ -189,9 +189,14 @@ namespace ScarabolMods
       return BerryAreaJobTracker.GetCount (this.player);
     }
 
-    public void AddBerryAreaJob (UnityEngine.Bounds bounds)
+    public void AddBerryAreaJob (Vector3Int center, int radius)
     {
-      BerryAreaJobTracker.Add (bounds, this.player);
+      for (int x = -radius; x <= radius; x++) {
+        for (int z = -radius; z <= radius; z++) {
+          RemoveBlock (center.Add (x, 0, z));
+        }
+      }
+      BerryAreaJobTracker.Add (new UnityEngine.Bounds (center.Vector, new UnityEngine.Vector3 (radius, 0, radius)), this.player);
     }
   }
 }

@@ -261,11 +261,14 @@ namespace ScarabolMods
 
     public virtual bool Execute (SettlersManager manager)
     {
+      ushort itemTypeCrate = ItemTypes.IndexLookup.GetIndex ("crate");
       Vector3Int absPos = manager.SettlementOrigin.Add (-15, 0, -15);
-      manager.Api.AddBerryAreaJob (new UnityEngine.Bounds (absPos.Vector, new UnityEngine.Vector3 (3.0f, 0, 10.0f)));
+      manager.Api.AddBerryAreaJob (absPos, 6);
+      manager.Api.PlaceBlock (absPos.Add (7, 0, 0), itemTypeCrate, itemTypeCrate);
       Pipliz.Log.Write ($"AI: placed berry farmer at {absPos}");
       absPos = manager.SettlementOrigin.Add (15, 0, -15);
-      manager.Api.AddBerryAreaJob (new UnityEngine.Bounds (absPos.Vector, new UnityEngine.Vector3 (3.0f, 0, 10.0f)));
+      manager.Api.AddBerryAreaJob (absPos, 6);
+      manager.Api.PlaceBlock (absPos.Add (-7, 0, 0), itemTypeCrate, itemTypeCrate);
       Pipliz.Log.Write ($"AI: placed berry farmer at {absPos}");
       return manager.Api.GetBerryAreaJobsCount () >= 2;
     }

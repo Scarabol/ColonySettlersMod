@@ -52,6 +52,7 @@ namespace ScarabolMods
           return step.Execute (manager);
         }
       }
+      Pipliz.Log.Write ("AI: strategy done. idling");
       return false;
     }
   }

@@ -23,6 +23,15 @@ namespace ScarabolMods
     public Vector3Int SettlementOrigin;
     public int DefenceLevel;
     public BotAPIWrapper Api = null;
+    public bool HasMine = false;
+
+    public Vector3Int MinePos {
+      get {
+        Vector3Int minePos = SettlementOrigin.Add (0, 0, -10);
+        minePos.y = TerrainGenerator.GetHeight (minePos.x, minePos.z);
+        return minePos;
+      }
+    }
 
     public SettlersManager (ulong steamId, Vector3Int settlementOrigin)
     {

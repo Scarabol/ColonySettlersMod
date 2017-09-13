@@ -274,35 +274,31 @@ namespace ScarabolMods
     }
   }
 
-  public class DigMine : StrategyStep
+  public class DigMineStairs : StrategyStep
   {
-    private bool hasMine = false;
-
     public virtual bool IsComplete (SettlersManager manager)
     {
-      return hasMine;
+      return manager.HasMine;
     }
 
     public virtual bool Execute (SettlersManager manager)
     {
-      Pipliz.Log.Write ("AI: Started digging mine");
+      Pipliz.Log.Write ("AI: Started digging mine stairs");
       ushort itemTypeStonebricks = ItemTypes.IndexLookup.GetIndex ("stonebricks");
       ushort itemTypeTorch = ItemTypes.IndexLookup.GetIndex ("torch");
-      Vector3Int minePos = manager.SettlementOrigin.Add (0, 0, -10);
-      minePos.y = TerrainGenerator.GetHeight (minePos.x, minePos.z);
       Vector3Int stairOffset = new Vector3Int (0, 0, 0);
-      for (int y = minePos.y; y > 0; y--) {
+      for (int y = manager.MinePos.y; y > 0; y--) {
         for (int x = -1; x <= 1; x++) {
           for (int z = 0; z <= 2; z++) {
-            if (!manager.Api.RemoveBlock (new Vector3Int (minePos.x + x, y, minePos.z + z))) {
+            if (!manager.Api.RemoveBlock (new Vector3Int (manager.MinePos.x + x, y, manager.MinePos.z + z))) {
               return false;
             }
           }
         }
         if (stairOffset.y == 1 || (stairOffset.y > 0 && (stairOffset.y % 8) == 0)) {
-          manager.Api.PlaceBlock (minePos.Add (0, -stairOffset.y, 2), itemTypeTorch, BuiltinBlocks.TorchZP);
+          manager.Api.PlaceBlock (manager.MinePos.Add (0, -stairOffset.y, 2), itemTypeTorch, BuiltinBlocks.TorchZP);
         }
-        manager.Api.PlaceBlock (minePos.Add (1, 0, 2) - stairOffset, itemTypeStonebricks, itemTypeStonebricks);
+        manager.Api.PlaceBlock (manager.MinePos.Add (1, 0, 2) - stairOffset, itemTypeStonebricks, itemTypeStonebricks);
         stairOffset.y++;
         if (stairOffset.z >= 2) {
           if (stairOffset.x >= 2) {
@@ -322,8 +318,8 @@ namespace ScarabolMods
           stairOffset.z++;
         }
       }
-      hasMine = true;
-      Pipliz.Log.Write ("AI: Mine done");
+      manager.HasMine = true;
+      Pipliz.Log.Write ("AI: Mine stairs done");
       return true;
     }
   }

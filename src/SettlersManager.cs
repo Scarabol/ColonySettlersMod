@@ -26,6 +26,14 @@ namespace ScarabolMods
     public bool HasMine = false;
     public List<MinerSpot> MinerSpots = new List<MinerSpot> ();
 
+    public Vector3Int QuiverPos {
+      get {
+        Vector3Int quiverPos = new Vector3Int (SettlementOrigin.x, 0, SettlementOrigin.z + SettlementTargetSize - 15);
+        quiverPos.y = TerrainGenerator.GetHeight (quiverPos.x, quiverPos.z) + 1;
+        return quiverPos;
+      }
+    }
+
     public Vector3Int MinePos {
       get {
         Vector3Int minePos = SettlementOrigin.Add (0, 0, -10);

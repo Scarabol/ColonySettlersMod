@@ -194,25 +194,18 @@ namespace ScarabolMods
 
   public class PlaceQuiver : StrategyStep
   {
-    private Vector3Int GetQuiverPos (SettlersManager manager)
-    {
-      Vector3Int quiverPos = new Vector3Int (manager.SettlementOrigin.x, 0, manager.SettlementOrigin.z + manager.SettlementTargetSize - 15);
-      quiverPos.y = TerrainGenerator.GetHeight (quiverPos.x, quiverPos.z) + 1;
-      return quiverPos;
-    }
-
     public virtual bool IsComplete (SettlersManager manager)
     {
       ushort actualType;
-      return World.TryGetTypeAt (GetQuiverPos (manager), out actualType) && actualType == BuiltinBlocks.QuiverZP;
+      return World.TryGetTypeAt (manager.QuiverPos, out actualType) && actualType == BuiltinBlocks.QuiverZP;
     }
 
     public virtual bool Execute (SettlersManager manager)
     {
-      Vector3Int quiverPos = GetQuiverPos (manager);
+      Vector3Int quiverPos = manager.QuiverPos;
       bool result = manager.Api.PlaceBlock (quiverPos, ItemTypes.IndexLookup.GetIndex ("quiver"), BuiltinBlocks.QuiverZP);
       if (result) {
-        Pipliz.Log.Write ($"AI: placed my quiver at {quiverPos}");
+        Pipliz.Log.Write ($"AI: placed quiver at {quiverPos}");
       } else {
         Pipliz.Log.Write ($"AI: Could not place quiver at {quiverPos}");
       }

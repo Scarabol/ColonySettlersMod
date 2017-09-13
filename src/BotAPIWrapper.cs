@@ -50,20 +50,19 @@ namespace ScarabolMods
       data.voxelHitSide = VoxelSide.yPlus;
       data.typeSelected = typeSelected;
       data.typeToBuild = typeToBuild;
+      bool solid;
       if (World.TryGetTypeAt (position, out data.typeTillNow) && (data.typeTillNow == typeSelected || data.typeTillNow == typeToBuild)) {
         return true;
-      } else if (data.typeTillNow != BuiltinBlocks.Air && data.typeTillNow != BuiltinBlocks.Water) {
-        if (!RemoveBlock (position)) {
-          Pipliz.Log.Write ($"AI: Can't build at {position}, place is occupied");
-          return false;
-        }
+      } else if (!World.TryIsSolid (position, out solid)) {
+        Pipliz.Log.WriteError ($"Could not check for solid block at {position}");
+      } else if (solid && !RemoveBlock (position)) {
+        Pipliz.Log.Write ($"AI: Can't build at {position}, place is occupied");
+        return false;
       }
-      if (ItemTypes.IsPlaceable (data.typeSelected) && !Stockpile.TryRemove (data.typeSelected)) {
-        if (!TryCraftItem (data.typeSelected)) {
-          string typename;
-          if (ItemTypes.IndexLookup.TryGetName (data.typeSelected, out typename)) {
-            Pipliz.Log.Write ($"AI: No {typename} item in stockpile to place");
-          }
+      if (ItemTypes.IsPlaceable (data.typeSelected) && !Stockpile.TryRemove (data.typeSelected) && !TryCraftItem (data.typeSelected)) {
+        string typename;
+        if (ItemTypes.IndexLookup.TryGetName (data.typeSelected, out typename)) {
+          Pipliz.Log.Write ($"AI: No {typename} item in stockpile to place");
         }
       }
       bool result = ChangeBlock (data);

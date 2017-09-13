@@ -208,8 +208,26 @@ namespace ScarabolMods
       foreach (MinerSpot spot in minerSpots) {
         if (spot.SpotType == spotType && spot.IsFree) {
           spot.IsFree = false;
-          MinerAreaJobTracker.Add (new UnityEngine.Bounds (spot.Position.Add (0, 1, 0).Vector, new UnityEngine.Vector3 (0, 0, 0)), this.player);
+          Vector3Int minerPos = spot.Position.Add (0, 1, 0);
+          MinerAreaJobTracker.Add (new UnityEngine.Bounds (minerPos.Vector, new UnityEngine.Vector3 (0, 0, 0)), this.player);
           Pipliz.Log.Write ($"Added a coal miner job");
+          ushort itemTypeCrate = ItemTypes.IndexLookup.GetIndex ("crate");
+          Vector3Int closestCrate = Stockpile.ClosestCrate (minerPos);
+          if (closestCrate.IsValid && (closestCrate - minerPos).SqrMagnitudeLong < 3) {
+            return true;
+          }
+          for (int x = -1; x <= 1; x++) {
+            for (int z = -1; z <= 1; z++) {
+              Vector3Int cratePos = minerPos.Add (x, 0, z);
+              bool solid;
+              ushort actualType;
+              if ((x != 0 || z != 0) && World.TryIsSolid (cratePos, out solid) && !solid && World.TryGetTypeAt (cratePos.Add (0, -1, 0), out actualType) && actualType == BuiltinBlocks.InfiniteStone) {
+                PlaceBlock (cratePos, itemTypeCrate, itemTypeCrate);
+                Pipliz.Log.Write ($"AI: Placed crate at {cratePos}");
+                return true;
+              }
+            }
+          }
           return true;
         }
       }

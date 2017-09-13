@@ -400,13 +400,8 @@ namespace ScarabolMods
   {
     public virtual bool IsComplete (SettlersManager manager)
     {
-      int miners = 0;
-      foreach (MinerSpot spot in manager.MinerSpots) {
-        if (!spot.IsFree && spot.SpotType == MinerSpot.MinerSpotType.Coal) {
-          miners++;
-        }
-      }
-      return miners >= 1;
+      // FIXME return number of miners
+      return true;
     }
 
     public virtual bool Execute (SettlersManager manager)
@@ -419,13 +414,8 @@ namespace ScarabolMods
   {
     public virtual bool IsComplete (SettlersManager manager)
     {
-      int miners = 0;
-      foreach (MinerSpot spot in manager.MinerSpots) {
-        if (!spot.IsFree && spot.SpotType == MinerSpot.MinerSpotType.Iron) {
-          miners++;
-        }
-      }
-      return miners >= 1;
+      // FIXME return number of miners
+      return true;
     }
 
     public virtual bool Execute (SettlersManager manager)

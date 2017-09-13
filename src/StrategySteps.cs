@@ -390,6 +390,19 @@ namespace ScarabolMods
     }
   }
 
+  public class CraftingPickaxe : StrategyStep
+  {
+    public virtual bool IsComplete (SettlersManager manager)
+    {
+      return manager.Api.GetItemAmountStockpile ("pickaxe") >= 1;
+    }
+
+    public virtual bool Execute (SettlersManager manager)
+    {
+      return manager.Api.TryCraftItem ("pickaxe");
+    }
+  }
+
   public class HireCoalMiner : StrategyStep
   {
     public virtual bool IsComplete (SettlersManager manager)

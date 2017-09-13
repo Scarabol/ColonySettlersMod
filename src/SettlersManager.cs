@@ -24,6 +24,7 @@ namespace ScarabolMods
     public int DefenceLevel;
     public BotAPIWrapper Api = null;
     public bool HasMine = false;
+    public List<MinerSpot> MinerSpots = new List<MinerSpot> ();
 
     public Vector3Int MinePos {
       get {

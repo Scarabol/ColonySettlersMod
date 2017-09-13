@@ -389,4 +389,42 @@ namespace ScarabolMods
       return result;
     }
   }
+
+  public class HireCoalMiner : StrategyStep
+  {
+    public virtual bool IsComplete (SettlersManager manager)
+    {
+      int miners = 0;
+      foreach (MinerSpot spot in manager.MinerSpots) {
+        if (!spot.IsFree && spot.SpotType == MinerSpot.MinerSpotType.Coal) {
+          miners++;
+        }
+      }
+      return miners >= 1;
+    }
+
+    public virtual bool Execute (SettlersManager manager)
+    {
+      return manager.Api.AddMinerJob (MinerSpot.MinerSpotType.Coal, manager.MinerSpots);
+    }
+  }
+
+  public class HireIronMiner : StrategyStep
+  {
+    public virtual bool IsComplete (SettlersManager manager)
+    {
+      int miners = 0;
+      foreach (MinerSpot spot in manager.MinerSpots) {
+        if (!spot.IsFree && spot.SpotType == MinerSpot.MinerSpotType.Iron) {
+          miners++;
+        }
+      }
+      return miners >= 1;
+    }
+
+    public virtual bool Execute (SettlersManager manager)
+    {
+      return manager.Api.AddMinerJob (MinerSpot.MinerSpotType.Iron, manager.MinerSpots);
+    }
+  }
 }

@@ -203,5 +203,40 @@ namespace ScarabolMods
       }
       BerryAreaJobTracker.Add (new UnityEngine.Bounds (center.Vector, new UnityEngine.Vector3 (radius, 0, radius)), this.player);
     }
+
+    public bool AddMinerJob (MinerSpot.MinerSpotType spotType, List<MinerSpot> minerSpots)
+    {
+      foreach (MinerSpot spot in minerSpots) {
+        if (spot.SpotType == spotType && spot.IsFree) {
+          spot.IsFree = false;
+          MinerAreaJobTracker.Add (new UnityEngine.Bounds (spot.Position.Add (0, 1, 0).Vector, new UnityEngine.Vector3 (0, 0, 0)), this.player);
+          Pipliz.Log.Write ($"Added a coal miner job");
+          return true;
+        }
+      }
+      Pipliz.Log.Write ($"Could not find a free {spotType} miner spot");
+      return false;
+    }
+  }
+
+  public class MinerSpot
+  {
+    public enum MinerSpotType
+    {
+      Coal,
+      Iron,
+      Gold
+    }
+
+    public MinerSpotType SpotType;
+    public Vector3Int Position;
+    public bool IsFree;
+
+    public MinerSpot (MinerSpotType spotType, Vector3Int position)
+    {
+      this.SpotType = spotType;
+      this.Position = position;
+      this.IsFree = true;
+    }
   }
 }

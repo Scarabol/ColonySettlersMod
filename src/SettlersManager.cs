@@ -42,6 +42,14 @@ namespace ScarabolMods
       }
     }
 
+    public Vector3Int FurnacePos {
+      get {
+        Vector3Int furnacePos = SettlementOrigin.Add (0, 0, -20);
+        furnacePos.y = TerrainGenerator.GetHeight (furnacePos.x, furnacePos.z);
+        return furnacePos;
+      }
+    }
+
     public SettlersManager (ulong steamId, Vector3Int settlementOrigin)
     {
       this.SteamID = steamId;

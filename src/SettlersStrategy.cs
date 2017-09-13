@@ -47,6 +47,7 @@ namespace ScarabolMods
       result.steps.Add (new CraftingPickaxe ());
       result.steps.Add (new HireCoalMiner ());
       result.steps.Add (new HireIronMiner ());
+      result.steps.Add (new PlaceFurnace ());
       return result;
     }
 

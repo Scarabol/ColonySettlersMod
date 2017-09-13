@@ -433,4 +433,25 @@ namespace ScarabolMods
       return manager.Api.AddMinerJob (MinerSpot.MinerSpotType.Iron, manager.MinerSpots);
     }
   }
+
+  public class PlaceFurnace : StrategyStep
+  {
+    public virtual bool IsComplete (SettlersManager manager)
+    {
+      ushort actualType;
+      return World.TryGetTypeAt (manager.FurnacePos, out actualType) && (actualType == BuiltinBlocks.FurnaceLitZN || actualType == BuiltinBlocks.FurnaceUnlitZN);
+    }
+
+    public virtual bool Execute (SettlersManager manager)
+    {
+      Vector3Int smelterPos = manager.FurnacePos;
+      bool result = manager.Api.PlaceBlock (smelterPos, ItemTypes.IndexLookup.GetIndex ("furnace"), BuiltinBlocks.FurnaceUnlitZN);
+      if (result) {
+        Pipliz.Log.Write ($"AI: placed furnace at {smelterPos}");
+      } else {
+        Pipliz.Log.Write ($"AI: Could not place furnace at {smelterPos}");
+      }
+      return result;
+    }
+  }
 }

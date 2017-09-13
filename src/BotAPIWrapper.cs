@@ -162,7 +162,7 @@ namespace ScarabolMods
             stockpile.Add (recipe.Results);
             string name;
             if (ItemTypes.IndexLookup.TryGetName (itemTypeResult, out name)) {
-              Pipliz.Log.Write ($"AI: just crafted a {name}");
+              Pipliz.Log.Write ($"AI: just crafted {name}");
             }
             return true;
           }

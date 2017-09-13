@@ -323,4 +323,70 @@ namespace ScarabolMods
       return true;
     }
   }
+
+  public class DigMineRoom : StrategyStep
+  {
+    public virtual bool IsComplete (SettlersManager manager)
+    {
+      int coalSpots = 0;
+      int ironSpots = 0;
+      int goldSpots = 0;
+      foreach (MinerSpot spot in manager.MinerSpots) {
+        if (spot.SpotType == MinerSpot.MinerSpotType.Coal) {
+          coalSpots++;
+        } else if (spot.SpotType == MinerSpot.MinerSpotType.Iron) {
+          ironSpots++;
+        } else if (spot.SpotType == MinerSpot.MinerSpotType.Gold) {
+          goldSpots++;
+        }
+      }
+      return coalSpots >= 1 && ironSpots >= 2 && goldSpots >= 1;
+    }
+
+    public virtual bool Execute (SettlersManager manager)
+    {
+      if (!manager.HasMine) {
+        return false;
+      }
+      Pipliz.Log.Write ("AI: Started digging mine room");
+      ushort itemTypeInfCoal = ItemTypes.IndexLookup.GetIndex ("infinitecoal");
+      ushort itemTypeInfIron = ItemTypes.IndexLookup.GetIndex ("infiniteiron");
+      ushort itemTypeInfGold = ItemTypes.IndexLookup.GetIndex ("infinitegold");
+      int iteration = 0;
+      while (!IsComplete (manager) && iteration < 10) {
+        for (int x = -1 - iteration; x <= 3 + iteration * 2; x++) {
+          for (int z = iteration; z < 5 + iteration; z++) {
+            Vector3Int absPos = new Vector3Int (manager.MinePos.x + x, 0, manager.MinePos.z + 2 + z);
+            for (int y = 1; y <= 3; y++) {
+              if (!manager.Api.RemoveBlock (absPos.Add (0, y, 0))) {
+                return false;
+              }
+            }
+            ushort itemTypeInf;
+            if (!World.TryGetTypeAt (absPos, out itemTypeInf)) {
+              Pipliz.Log.WriteError ($"AI: Could not determine type at {absPos}");
+              return false;
+            } else if (itemTypeInf == itemTypeInfCoal) {
+              manager.MinerSpots.Add (new MinerSpot (MinerSpot.MinerSpotType.Coal, absPos));
+              Pipliz.Log.Write ($"AI: Found some coal at {absPos}");
+            } else if (itemTypeInf == itemTypeInfIron) {
+              manager.MinerSpots.Add (new MinerSpot (MinerSpot.MinerSpotType.Iron, absPos));
+              Pipliz.Log.Write ($"AI: Found some iron at {absPos}");
+            } else if (itemTypeInf == itemTypeInfGold) {
+              manager.MinerSpots.Add (new MinerSpot (MinerSpot.MinerSpotType.Gold, absPos));
+              Pipliz.Log.Write ($"AI: Found some gold at {absPos}");
+            }
+          }
+        }
+        iteration++;
+      }
+      bool result = IsComplete (manager);
+      if (!result) {
+        Pipliz.Log.WriteError ($"AI: Could not find enough spots, something is wrong");
+      } else {
+        Pipliz.Log.Write ("AI: Mine room done");
+      }
+      return result;
+    }
+  }
 }

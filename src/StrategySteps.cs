@@ -220,7 +220,7 @@ namespace ScarabolMods
     }
   }
 
-  public class Crafting : StrategyStep
+  public class CraftingBow : StrategyStep
   {
     public virtual bool IsComplete (SettlersManager manager)
     {

@@ -39,7 +39,7 @@ namespace ScarabolMods
       result.steps.Add (new DigTrench ());
       result.steps.Add (new PlaceBeds ());
       result.steps.Add (new PlaceQuiver ());
-      result.steps.Add (new Crafting ());
+      result.steps.Add (new CraftingBow ());
       result.steps.Add (new Laborers ());
       result.steps.Add (new BerryFarmers ());
       result.steps.Add (new DigMineStairs ());

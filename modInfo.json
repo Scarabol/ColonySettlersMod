@@ -1,0 +1,12 @@
+[
+  {
+    "name" : "scarabol.settlers",
+    "version" : "1.0.0",
+    "dllpath" : "Settlers.dll",
+    "enabled" : true,
+    "compatibleversions" : [
+      "0.5.0",
+      "0.5.1"
+    ]
+  }
+]

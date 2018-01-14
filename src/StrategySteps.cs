@@ -267,6 +267,41 @@ namespace ScarabolMods
     }
   }
 
+  public class Foresters : StrategyStep
+  {
+    public virtual bool IsComplete (SettlersManager manager)
+    {
+      return manager.Api.GetForesterJobsCount () >= 2;
+    }
+
+    public virtual bool Execute (SettlersManager manager)
+    {
+      ushort itemTypeCrate = ItemTypes.IndexLookup.GetIndex ("crate");
+      Vector3Int absPos = manager.SettlementOrigin.Add (-15, 0, 15);
+      manager.Api.AddForesterJob (absPos, 6, 15);
+      manager.Api.PlaceBlock (absPos.Add (7, 0, 0), itemTypeCrate, itemTypeCrate);
+      Pipliz.Log.Write ($"AI: placed forester at {absPos}");
+      absPos = manager.SettlementOrigin.Add (15, 0, 15);
+      manager.Api.AddForesterJob (absPos, 6, 15);
+      manager.Api.PlaceBlock (absPos.Add (-7, 0, 0), itemTypeCrate, itemTypeCrate);
+      Pipliz.Log.Write ($"AI: placed forester at {absPos}");
+      return manager.Api.GetBerryAreaJobsCount () >= 2;
+    }
+  }
+
+  public class CraftingAxe : StrategyStep
+  {
+    public virtual bool IsComplete (SettlersManager manager)
+    {
+      return manager.Api.GetItemAmountStockpile ("axe") >= 1;
+    }
+
+    public virtual bool Execute (SettlersManager manager)
+    {
+      return manager.Api.TryCraftItem ("axe");
+    }
+  }
+
   public class DigMineStairs : StrategyStep
   {
     public virtual bool IsComplete (SettlersManager manager)

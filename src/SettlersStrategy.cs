@@ -42,11 +42,13 @@ namespace ScarabolMods
       result.steps.Add (new CraftingBow ());
       result.steps.Add (new Laborers ());
       result.steps.Add (new BerryFarmers ());
-      result.steps.Add (new DigMineStairs ());
-      result.steps.Add (new DigMineRoom ());
-      result.steps.Add (new CraftingPickaxe ());
-      result.steps.Add (new HireCoalMiner ());
-      result.steps.Add (new HireIronMiner ());
+      result.steps.Add (new Foresters ());
+      result.steps.Add (new CraftingAxe ());
+//      result.steps.Add (new DigMineStairs ());
+//      result.steps.Add (new DigMineRoom ());
+//      result.steps.Add (new CraftingPickaxe ());
+//      result.steps.Add (new HireCoalMiner ());
+//      result.steps.Add (new HireIronMiner ());
 //      result.steps.Add (new PlaceFurnace ());
       return result;
     }

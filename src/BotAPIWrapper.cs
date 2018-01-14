@@ -203,6 +203,25 @@ namespace ScarabolMods
       BerryAreaJobTracker.Add (new UnityEngine.Bounds (center.Vector, new UnityEngine.Vector3 (radius, 0, radius)), this.player);
     }
 
+    public int GetForesterJobsCount ()
+    {
+      return ForesterAreaJobTracker.GetCount (this.player);
+    }
+
+    public void AddForesterJob (Vector3Int start, int width, int depth)
+    {
+      for (int x = 0; x < width; x++) {
+        for (int z = 0; z <= depth; z++) {
+          for (int y = 0; y <= 4; y++) {
+            RemoveBlock (start.Add (x, y, z));
+          }
+        }
+      }
+      ForesterAreaJobTracker.Add (new UnityEngine.Bounds (start.Add (width / 2, 0, depth / 2).Vector, new UnityEngine.Vector3 (width / 2.0f, 0, depth / 2.0f)), this.player);
+      ushort itemTypeCrate = ItemTypes.IndexLookup.GetIndex ("crate");
+      PlaceBlock (start.Add (0, 0, -1), itemTypeCrate, itemTypeCrate);
+    }
+
     public bool AddMinerJob (MinerSpot.MinerSpotType spotType, List<MinerSpot> minerSpots)
     {
       foreach (MinerSpot spot in minerSpots) {

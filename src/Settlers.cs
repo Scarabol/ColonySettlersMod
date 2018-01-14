@@ -16,14 +16,6 @@ namespace ScarabolMods
   [ModLoader.ModManager]
   public static class SettlersModEntries
   {
-    public static string ModDirectory;
-
-    [ModLoader.ModCallback (ModLoader.EModCallbackType.OnAssemblyLoaded, "scarabol.settlers.assemblyload")]
-    public static void OnAssemblyLoaded (string path)
-    {
-      ModDirectory = Path.GetDirectoryName (path);
-    }
-
     [ModLoader.ModCallback (ModLoader.EModCallbackType.AfterStartup, "scarabol.settlers.registercallbacks")]
     public static void AfterStartup ()
     {

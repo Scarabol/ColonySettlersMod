@@ -27,7 +27,7 @@ namespace ScarabolMods
     public Vector3Int QuiverPos {
       get {
         Vector3Int quiverPos = new Vector3Int (SettlementOrigin.x, 0, SettlementOrigin.z + SettlementTargetSize - 15);
-        quiverPos.y = TerrainGenerator.GetHeight (quiverPos.x, quiverPos.z) + 1;
+        quiverPos.y = GeneralAPIWrapper.GetTerrainHeight (quiverPos.x, quiverPos.z) + 1;
         return quiverPos;
       }
     }
@@ -35,7 +35,7 @@ namespace ScarabolMods
     public Vector3Int MinePos {
       get {
         Vector3Int minePos = SettlementOrigin.Add (0, 0, -10);
-        minePos.y = TerrainGenerator.GetHeight (minePos.x, minePos.z);
+        minePos.y = GeneralAPIWrapper.GetTerrainHeight (minePos.x, minePos.z);
         return minePos;
       }
     }
@@ -43,7 +43,7 @@ namespace ScarabolMods
     public Vector3Int FurnacePos {
       get {
         Vector3Int furnacePos = SettlementOrigin.Add (0, 0, -20);
-        furnacePos.y = TerrainGenerator.GetHeight (furnacePos.x, furnacePos.z);
+        furnacePos.y = GeneralAPIWrapper.GetTerrainHeight (furnacePos.x, furnacePos.z);
         return furnacePos;
       }
     }

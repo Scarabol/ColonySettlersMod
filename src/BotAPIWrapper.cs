@@ -125,7 +125,7 @@ namespace ScarabolMods
       float avgHeight = 0.0f;
       for (int x = -range; x <= range; x++) {
         for (int z = -range; z <= range; z++) {
-          avgHeight += TerrainGenerator.GetHeight (centerx + x, centerz + z);
+          avgHeight += GeneralAPIWrapper.GetTerrainHeight (centerx + x, centerz + z);
         }
       }
       return Pipliz.Math.RoundToInt (avgHeight / System.Math.Pow (1 + range * 2, 2));

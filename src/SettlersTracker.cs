@@ -68,7 +68,7 @@ namespace ScarabolMods
     public static void StartSettlement (int startx, int startz)
     {
       Vector3Int origin = new Vector3Int (startx, 0, startz);
-      origin.y = TerrainGenerator.GetHeight (origin.x, origin.z) + 1;
+      origin.y = GeneralAPIWrapper.GetTerrainHeight (origin.x, origin.z) + 1;
       SettlersManager manager = new SettlersManager (GetNextID (), origin);
       settlers.Add (manager);
       manager.Connect ();

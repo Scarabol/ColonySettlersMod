@@ -5,8 +5,6 @@ using Pipliz;
 using Pipliz.Chatting;
 using Pipliz.JSON;
 using Pipliz.Threading;
-using Pipliz.APIProvider.Recipes;
-using Pipliz.APIProvider.Jobs;
 using NPC;
 using System.Threading;
 using BlockTypes.Builtin;
@@ -59,7 +57,7 @@ namespace ScarabolMods
         Pipliz.Log.Write ($"AI: Can't build at {position}, place is occupied");
         return false;
       }
-      if (ItemTypes.IsPlaceable (data.typeSelected) && !Stockpile.TryRemove (data.typeSelected) && !TryCraftItem (data.typeSelected)) {
+      if (ItemTypes.GetType (data.typeSelected).IsPlaceable && !Stockpile.TryRemove (data.typeSelected) && !TryCraftItem (data.typeSelected)) {
         string typename;
         if (ItemTypes.IndexLookup.TryGetName (data.typeSelected, out typename)) {
           Pipliz.Log.Write ($"AI: No {typename} item in stockpile to place");
@@ -95,7 +93,7 @@ namespace ScarabolMods
         result = ChangeBlock (data);
         if (result) {
           NPCInventory dummyInv = new NPCInventory (float.MaxValue);
-          dummyInv.Add (ItemTypes.RemovalItems (data.typeTillNow));
+          dummyInv.Add (ItemTypes.GetType (data.typeTillNow).OnRemoveItems);
           dummyInv.TryDump (Stockpile);
           // TODO sleep actual destructionTime minus delay in main thread
           Thread.Sleep (500);

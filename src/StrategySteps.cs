@@ -5,8 +5,6 @@ using Pipliz;
 using Pipliz.Chatting;
 using Pipliz.JSON;
 using Pipliz.Threading;
-using Pipliz.APIProvider.Recipes;
-using Pipliz.APIProvider.Jobs;
 using NPC;
 using System.Threading;
 using BlockTypes.Builtin;
@@ -181,10 +179,10 @@ namespace ScarabolMods
     public virtual bool Execute (SettlersManager manager)
     {
       for (int z = -1; z <= 1; z++) {
-        if (!manager.Api.PlaceBlock (manager.SettlementOrigin.Add (-5, 0, z), BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXN)) {
+        if (!manager.Api.PlaceBlock (manager.SettlementOrigin.Add (-5, 0, z), BuiltinBlocks.Bed, BuiltinBlocks.BedXP)) {
           return false;
         }
-        if (!manager.Api.PlaceBlock (manager.SettlementOrigin.Add (5, 0, z), BuiltinBlocks.Bed, BuiltinBlocks.BedHeadXP)) {
+        if (!manager.Api.PlaceBlock (manager.SettlementOrigin.Add (5, 0, z), BuiltinBlocks.Bed, BuiltinBlocks.BedXP)) {
           return false;
         }
       }
@@ -197,13 +195,13 @@ namespace ScarabolMods
     public virtual bool IsComplete (SettlersManager manager)
     {
       ushort actualType;
-      return World.TryGetTypeAt (manager.QuiverPos, out actualType) && actualType == BuiltinBlocks.QuiverZP;
+      return World.TryGetTypeAt (manager.QuiverPos, out actualType) && actualType == BuiltinBlocks.GuardSlingerJobNightZP;
     }
 
     public virtual bool Execute (SettlersManager manager)
     {
       Vector3Int quiverPos = manager.QuiverPos;
-      bool result = manager.Api.PlaceBlock (quiverPos, ItemTypes.IndexLookup.GetIndex ("quiver"), BuiltinBlocks.QuiverZP);
+      bool result = manager.Api.PlaceBlock (quiverPos, ItemTypes.IndexLookup.GetIndex ("quiver"), BuiltinBlocks.GuardSlingerJobNightZP);
       if (result) {
         Pipliz.Log.Write ($"AI: placed quiver at {quiverPos}");
       } else {
@@ -464,13 +462,13 @@ namespace ScarabolMods
     public virtual bool IsComplete (SettlersManager manager)
     {
       ushort actualType;
-      return World.TryGetTypeAt (manager.FurnacePos, out actualType) && (actualType == BuiltinBlocks.FurnaceLitZN || actualType == BuiltinBlocks.FurnaceUnlitZN);
+      return World.TryGetTypeAt (manager.FurnacePos, out actualType) && (actualType == BuiltinBlocks.FurnaceLitZN || actualType == BuiltinBlocks.FurnaceZN);
     }
 
     public virtual bool Execute (SettlersManager manager)
     {
       Vector3Int smelterPos = manager.FurnacePos;
-      bool result = manager.Api.PlaceBlock (smelterPos, ItemTypes.IndexLookup.GetIndex ("furnace"), BuiltinBlocks.FurnaceUnlitZN);
+      bool result = manager.Api.PlaceBlock (smelterPos, ItemTypes.IndexLookup.GetIndex ("furnace"), BuiltinBlocks.FurnaceZN);
       if (result) {
         Pipliz.Log.Write ($"AI: placed furnace at {smelterPos}");
       } else {

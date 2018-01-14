@@ -5,8 +5,6 @@ using Pipliz;
 using Pipliz.Chatting;
 using Pipliz.JSON;
 using Pipliz.Threading;
-using Pipliz.APIProvider.Recipes;
-using Pipliz.APIProvider.Jobs;
 using NPC;
 using System.Threading;
 using BlockTypes.Builtin;
@@ -16,7 +14,7 @@ namespace ScarabolMods
   [ModLoader.ModManager]
   public class SettlersChatCommand : ChatCommands.IChatCommand
   {
-    [ModLoader.ModCallback (ModLoader.EModCallbackType.AfterItemTypesServer, "scarabol.settlers.registercommand")]
+    [ModLoader.ModCallback (ModLoader.EModCallbackType.AfterItemTypesDefined, "scarabol.settlers.registercommand")]
     public static void AfterItemTypesServer ()
     {
       ChatCommands.CommandManager.RegisterCommand (new SettlersChatCommand ());

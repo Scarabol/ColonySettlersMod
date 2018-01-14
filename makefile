@@ -11,7 +11,7 @@ dllname = $(modname).dll
 #
 
 default:
-	mcs /target:library -r:../../../../colonyserver_Data/Managed/Assembly-CSharp.dll -r:../../Pipliz/APIProvider/APIProvider.dll -r:../../../../colonyserver_Data/Managed/UnityEngine.dll -out:"$(dllname)" -sdk:2 src/*.cs
+	mcs /target:library -r:../../../../colonyserver_Data/Managed/Assembly-CSharp.dll -r:../../Pipliz/APIProvider/APIProvider.dll -r:../../../../colonyserver_Data/Managed/UnityEngine.dll -r:../../Pipliz/BaseGame/BaseGame.dll -out:"$(dllname)" -sdk:2 src/*.cs
 
 clean:
 	rm -f "$(dllname)" "modInfo.json"

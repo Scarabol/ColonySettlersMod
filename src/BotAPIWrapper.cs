@@ -8,6 +8,7 @@ using Pipliz.Threading;
 using NPC;
 using System.Threading;
 using BlockTypes.Builtin;
+using Pipliz.Mods.BaseGame.BlockNPCs;
 
 namespace ScarabolMods
 {
@@ -154,7 +155,7 @@ namespace ScarabolMods
     public bool TryCraftItem (ushort itemTypeResult)
     {
       Stockpile stockpile = Stockpile;
-      foreach (Recipe recipe in RecipePlayer.AllRecipes) {
+      foreach (Recipe recipe in RecipePlayer.DefaultRecipes) {
         foreach (InventoryItem result in recipe.Results) {
           if (result.Type == itemTypeResult && stockpile.TryRemove (recipe.Requirements)) {
             stockpile.Add (recipe.Results);
@@ -171,7 +172,9 @@ namespace ScarabolMods
 
     public int GetLaborerCount ()
     {
-      return Colony.Get (this.player).LaborerCount - JobTracker.GetCount (this.player);
+      int laborer = Colony.Get (this.player).LaborerCount;
+      Log.Write ($"Bot has {laborer} laborer");
+      return laborer;
     }
 
     public bool AddLaborer ()
@@ -186,38 +189,32 @@ namespace ScarabolMods
       return colony.FollowerCount > followerBefore;
     }
 
+    // TODO this is shit
+    private int berryJobs = 0;
+
     public int GetBerryAreaJobsCount ()
     {
-      return BerryAreaJobTracker.GetCount (this.player);
+      return berryJobs;
     }
 
-    public void AddBerryAreaJob (Vector3Int center, int radius)
+    public void AddBerryAreaJob (Vector3Int min, Vector3Int max)
     {
-      for (int x = -radius; x <= radius; x++) {
-        for (int z = -radius; z <= radius; z++) {
-          RemoveBlock (center.Add (x, 0, z));
-        }
-      }
-      BerryAreaJobTracker.Add (new UnityEngine.Bounds (center.Vector, new UnityEngine.Vector3 (radius, 0, radius)), this.player);
+      AreaJobTracker.CreateNewAreaJob ("pipliz.berryfarm", this.player, min, max);
+      berryJobs++;
     }
+
+    private int foresterJobs = 0;
 
     public int GetForesterJobsCount ()
     {
-      return ForesterAreaJobTracker.GetCount (this.player);
+      return foresterJobs;
     }
 
-    public void AddForesterJob (Vector3Int start, int width, int depth)
+    public void AddForesterJob (Vector3Int min, Vector3Int max)
     {
-      for (int x = 0; x < width; x++) {
-        for (int z = 0; z <= depth; z++) {
-          for (int y = 0; y <= 4; y++) {
-            RemoveBlock (start.Add (x, y, z));
-          }
-        }
-      }
-      ForesterAreaJobTracker.Add (new UnityEngine.Bounds (start.Add (width / 2, 0, depth / 2).Vector, new UnityEngine.Vector3 (width / 2.0f, 0, depth / 2.0f)), this.player);
-      ushort itemTypeCrate = ItemTypes.IndexLookup.GetIndex ("crate");
-      PlaceBlock (start.Add (0, 0, -1), itemTypeCrate, itemTypeCrate);
+      AreaJobTracker.CreateNewAreaJob ("pipliz.temperateforest", this.player, min, max);
+      foresterJobs++;
+      PlaceBlock (min.Add (0, 0, -1), BuiltinBlocks.Crate, BuiltinBlocks.Crate);
     }
 
     public bool AddMinerJob (MinerSpot.MinerSpotType spotType, List<MinerSpot> minerSpots)
@@ -226,7 +223,9 @@ namespace ScarabolMods
         if (spot.SpotType == spotType && spot.IsFree) {
           spot.IsFree = false;
           Vector3Int minerPos = spot.Position.Add (0, 1, 0);
-          MinerAreaJobTracker.Add (new UnityEngine.Bounds (minerPos.Vector, new UnityEngine.Vector3 (0, 0, 0)), this.player);
+          MinerJob job = new MinerJob ();
+          // TODO check job orientation
+          job.InitializeOnAdd (minerPos, BuiltinBlocks.MinerJobXN, this.player);
           Pipliz.Log.Write ($"Added a coal miner job");
           ushort itemTypeCrate = ItemTypes.IndexLookup.GetIndex ("crate");
           Vector3Int closestCrate = Stockpile.ClosestCrate (minerPos);
